@@ -5,6 +5,8 @@
  */
 package qwirkle;
 
+import Controlador.Controlador;
+
 /**
  *
  * @author Carlos
@@ -16,6 +18,7 @@ public class Qwirkle {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Controlador controlador = new Controlador();
     }
     
 }

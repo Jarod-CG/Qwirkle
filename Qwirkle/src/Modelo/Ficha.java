@@ -10,13 +10,16 @@ package Modelo;
  * @author Carlos
  */
 public class Ficha {
-    private int valor;
+    private int valor;//es el valor que tiene la ficha al ponerlo en el tablero
+    //acceso más rapido
     private String imagen;
     private FichaType tipo;
     private FiguraType figura;
     private ColorType color;
     private boolean pressed; 
 
+  
+    
     public Ficha(FichaType tipo) {
         this.valor = 0;
         this.tipo = tipo;
@@ -25,6 +28,7 @@ public class Ficha {
         this.figura = tipo.getFigura();
         this.pressed = false;
     }
+    
 
     public int getValor() {
         return valor;

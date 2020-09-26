@@ -12,22 +12,19 @@ import java.util.ArrayList;
  * @author Carlos
  */
 public class Jugador {
-    private String nombre;
+
     private double puntaje;
     private ArrayList<Ficha> fichas;
+    private Ficha[] mano;
 
-    public Jugador(String nombre, double puntaje, ArrayList<Ficha> fichas) {
-        this.nombre = nombre;
-        this.puntaje = puntaje;
-        this.fichas = fichas;
+    public Jugador() {
+        this.fichas = new ArrayList();
+        this.mano = new Ficha[6];
+
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void addFichas(Ficha ficha) {
+        fichas.add(ficha);
     }
 
     public double getPuntaje() {
@@ -45,5 +42,5 @@ public class Jugador {
     public void setFichas(ArrayList<Ficha> fichas) {
         this.fichas = fichas;
     }
-        
+
 }
