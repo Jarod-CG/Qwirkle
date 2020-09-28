@@ -14,12 +14,15 @@ import java.util.Collections;
  */
 public class Juego {
 
-    private Ficha[][] matrizFichas;
+    private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     private ArrayList<Jugador> jugadores;
     private Ficha fichaActual;
     private ArrayList<Ficha> fichas;
+    private JugadaType tipoJugada;
+    //private Jugada jugadaPrevia;
 
     public Juego(int numSim, int numAva, int numHum) {
+        this.tipoJugada = null;
         this.jugadores = new ArrayList();
         if (numHum == 1) {
             //crea un jugador humano
@@ -60,6 +63,181 @@ public class Juego {
         this.fichaActual = fichaActual;
         this.fichas = fichas;
     }
+    
+    
+
+    public int jugadaValida(Ficha ficha,int fila, int columna){
+        int puntos = 0;
+//        if(jugadaPrevia != null){}
+
+        if(validarFigura(ficha, fila, columna) > 0){
+           puntos += validarFigura(ficha, fila, columna);
+        } 
+        if(validarColor(ficha, fila, columna) > 0){
+           puntos += validarColor(ficha, fila, columna);
+        }
+        return puntos;
+    }
+    
+    public void determinarTipoJugada(){
+        
+    }
+    
+    public int validarFigura(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
+        int puntos = 0;
+        //boolean res = false;
+        if(this.matrizFichas[fila][columna-1]!= null){
+            int izquierda = validarFiguraHaciaLaIzquierda(fichaActual,fila,columna); // retorna los puntos y 0 (no hay fichas alrededor)
+            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 100;
+        }
+        if(this.matrizFichas[fila][columna+1]!= null){
+            int derecha = validarFiguraHaciaLaDerecha(fichaActual,fila,columna);
+            puntos += derecha >= 0 ? puntos + derecha : puntos - 100;
+        }
+        if(this.matrizFichas[fila-1][columna]!= null){
+            int arriba = validarFiguraHaciaArriba(fichaActual,fila,columna);
+            puntos += arriba >= 0 ? puntos + arriba : puntos - 100;
+        }
+        if(this.matrizFichas[fila+1][columna]!= null){
+            int abajo = validarFiguraHaciaAbajo(fichaActual,fila,columna);
+            puntos += abajo >= 0 ? puntos + abajo : puntos - 100;
+        }
+        
+        if(puntos>0){
+            return puntos;
+        }else{
+            return 0;
+        }
+  
+    }
+    
+    public int validarColor(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
+        int puntos = 0;
+        //boolean res = false;
+        if(this.matrizFichas[fila][columna-1]!= null){
+            int izquierda = validarColorHaciaLaIzquierda(fichaActual,fila,columna); // retorna los puntos y 0 (no hay fichas alrededor)
+            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 100;
+        }
+        if(this.matrizFichas[fila][columna+1]!= null){
+            int derecha = validarColorHaciaLaDerecha(fichaActual,fila,columna);
+            puntos += derecha >= 0 ? puntos + derecha : puntos - 100;
+        }
+        if(this.matrizFichas[fila-1][columna]!= null){
+            int arriba = validarColorHaciaArriba(fichaActual,fila,columna);
+            puntos += arriba >= 0 ? puntos + arriba : puntos - 100;
+        }
+        if(this.matrizFichas[fila+1][columna]!= null){
+            int abajo = validarColorHaciaAbajo(fichaActual,fila,columna);
+            puntos += abajo >= 0 ? puntos + abajo : puntos - 100;
+        }
+        
+        if(puntos > 0){
+            return puntos;
+        }else{
+            return puntos;
+        }
+        
+    }
+    
+    public int validarFiguraHaciaLaIzquierda(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = columna-1; matrizFichas[fila][i] != null && i > 0 ; i--) { 
+            if ( matrizFichas[fila][i].getColor() != fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {    
+                //return false;
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarFiguraHaciaLaDerecha(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = columna+1; matrizFichas[fila][i] != null && i < matrizFichas.length-1 ; i++) { 
+            if ( matrizFichas[fila][i].getColor() != fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarFiguraHaciaArriba(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = fila-1; matrizFichas[i][columna] != null && i > 0 ; i--) { 
+            if ( matrizFichas[i][columna].getColor() != fichaActual.getColor() || 
+                    matrizFichas[i][columna].getFigura() == fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;    
+    }
+    
+    public int validarFiguraHaciaAbajo(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = fila+1; matrizFichas[i][columna] != null && i < matrizFichas.length-1 ; i++) { 
+            if ( matrizFichas[fila][i].getColor() != fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarColorHaciaLaIzquierda(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = columna-1; matrizFichas[fila][i] != null && i > 0 ; i--) { 
+            if ( matrizFichas[fila][i].getColor() == fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarColorHaciaLaDerecha(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = columna+1; matrizFichas[fila][i] != null && i < matrizFichas.length-1 ; i++) { 
+            if ( matrizFichas[fila][i].getColor() == fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarColorHaciaArriba(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = fila-1; matrizFichas[i][columna] != null && i > 0 ; i--) { 
+            if ( matrizFichas[i][columna].getColor() == fichaActual.getColor() || 
+                    matrizFichas[i][columna].getFigura() != fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    public int validarColorHaciaAbajo(Ficha fichaActual,int fila, int columna){
+        int puntos = 0;
+        for (int i = fila+1; matrizFichas[i][columna] != null && i < matrizFichas.length-1 ; i++) { 
+            if ( matrizFichas[fila][i].getColor() == fichaActual.getColor() || 
+                    matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {    
+                return -1;
+            }
+            puntos++;
+        }
+        return puntos;
+    }
+    
+    
+    
 
     public Ficha[][] getMatrizFichas() {
         return matrizFichas;

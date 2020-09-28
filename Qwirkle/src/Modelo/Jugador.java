@@ -22,6 +22,8 @@ public class Jugador {
         this.mano = new Ficha[6];
 
     }
+    
+    
 
     public void addFichas(Ficha ficha) {
         fichas.add(ficha);
