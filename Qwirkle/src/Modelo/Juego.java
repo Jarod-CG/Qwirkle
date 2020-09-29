@@ -18,11 +18,11 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Ficha fichaActual;
     private ArrayList<Ficha> fichas;
-    private JugadaType tipoJugada;
-    //private Jugada jugadaPrevia;
+    private JugadaType tipoJugadaActual;
+    private Jugada primerJugada;
 
     public Juego(int numSim, int numAva, int numHum) {
-        this.tipoJugada = null;
+        this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
         if (numHum == 1) {
             //crea un jugador humano
@@ -65,24 +65,55 @@ public class Juego {
     }
     
     
-
-    public int jugadaValida(Ficha ficha,int fila, int columna){
+    public int jugadaValida(Ficha ficha, int fila, int columna) {
         int puntos = 0;
-//        if(jugadaPrevia != null){}
-
-        if(validarFigura(ficha, fila, columna) > 0){
-           puntos += validarFigura(ficha, fila, columna);
-        } 
-        if(validarColor(ficha, fila, columna) > 0){
-           puntos += validarColor(ficha, fila, columna);
+        if (primerJugada != null) {
+            this.determinarTipoJugada(ficha);
+            if (this.tipoJugadaActual == JugadaType.PORFIGURA) {
+                if (validarFigura(ficha, fila, columna) > 0) {
+                    puntos += validarFigura(ficha, fila, columna);
+                }
+            } else {
+                if (validarColor(ficha, fila, columna) > 0) {
+                    puntos += validarColor(ficha, fila, columna);
+                }
+            }
         }
+
+        if (primerJugada == null) {
+            if (validarFigura(ficha, fila, columna) > 0) {
+                puntos += validarFigura(ficha, fila, columna);
+            }
+            if (validarColor(ficha, fila, columna) > 0) {
+                puntos += validarColor(ficha, fila, columna);
+            }            
+            this.primerJugada = new Jugada(fila,columna,puntos,ficha);
+        }
+
         return puntos;
     }
-    
-    public void determinarTipoJugada(){
-        
+
+    public void determinarTipoJugada(Ficha ficha){
+        if(ficha.getTipo() != primerJugada.getFicha().getTipo()){
+            if (ficha.getColor() == primerJugada.getFicha().getColor()) {
+                this.setTipoJugadaActual(JugadaType.PORCOLOR);
+            } else if(ficha.getFigura() == primerJugada.getFicha().getFigura()) {
+                this.setTipoJugadaActual(JugadaType.PORFIGURA);
+            }
+        }else{
+            this.setTipoJugadaActual(null);
+        }    
     }
     
+    /*  
+        Posibles jugadas
+        [{Jugada(2,3->5),Jugada(5,6->2)},
+        {Jugada(2,3->5)},
+        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5),Jugada(5,6->2)},
+        {},
+        {Jugada(2,3->5),Jugada(5,6->2)}},
+        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5)}] 
+         */
     public int validarFigura(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
         int puntos = 0;
         //boolean res = false;
@@ -270,5 +301,23 @@ public class Juego {
     public void setFichas(ArrayList<Ficha> fichas) {
         this.fichas = fichas;
     }
+
+    public JugadaType getTipoJugadaActual() {
+        return tipoJugadaActual;
+    }
+
+    public void setTipoJugadaActual(JugadaType tipoJugadaActual) {
+        this.tipoJugadaActual = tipoJugadaActual;
+    }
+
+    public Jugada getPrimerJugada() {
+        return primerJugada;
+    }
+
+    public void setPrimerJugada(Jugada primerJugada) {
+        this.primerJugada = primerJugada;
+    }
+    
+    
 
 }
