@@ -15,6 +15,7 @@ import java.util.Collections;
 public class Juego {
 
     private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
+    //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
     private ArrayList<Jugador> jugadores;
     private Ficha fichaActual;
     private ArrayList<Ficha> fichas;

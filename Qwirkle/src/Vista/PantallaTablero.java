@@ -20,14 +20,15 @@ public class PantallaTablero extends javax.swing.JFrame {
      * Creates new form PantallaTablero
      */
     public PantallaTablero() {
+        this.butArray = new JButton[15][19];
         initComponents();
         _init_();
     }
     
     public void _init_() {
-        pnlFichas.setLayout(new GridLayout(13, 13,1,1));
-        for (int i = 0; i < 13; i++) {
-            for (int j = 0; j < 13; j++) {
+        pnlFichas.setLayout(new GridLayout(15, 19,1,1));
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 19; j++) {
                 butArray[i][j] = new JButton();
                 butArray[i][j].setBackground(new Color(255,255,127));
                 butArray[i][j].setPreferredSize(new Dimension(45,45));
