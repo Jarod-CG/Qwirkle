@@ -5,6 +5,12 @@
  */
 package Vista;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+
 /**
  *
  * @author Jarod
@@ -15,7 +21,25 @@ public class PantallaTablero extends javax.swing.JFrame {
      * Creates new form PantallaTablero
      */
     public PantallaTablero() {
+        this.butArray = new JButton[8][14];
         initComponents();
+        _init_();
+    }
+    
+    public void _init_() {
+        pnlFichas.setLayout(new GridLayout(13, 13,1,1));
+        for (int i = 0; i < 13; i++) {
+            for (int j = 0; j < 13; j++) {
+                butArray[i][j] = new JButton();
+                butArray[i][j].setBackground(new Color(255,255,127));
+                butArray[i][j].setPreferredSize(new Dimension(45,45));
+                //butArray[i][j].setFont(new Font("Arial", Font.PLAIN, 7));
+                pnlFichas.add(butArray[i][j]);
+            }
+            
+        }
+        
+        
     }
 
     /**
@@ -170,7 +194,7 @@ public class PantallaTablero extends javax.swing.JFrame {
             }
         });
     }
-
+    public JButton[][] butArray;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAbajo;
     public javax.swing.JButton btnArriba;

@@ -23,15 +23,16 @@ public class Juego {
         this.jugadores = new ArrayList();
         if (numHum == 1) {
             //crea un jugador humano
-            jugadores.add(new Jugador());
+            jugadores.add(new MiJugador());
         }
         for (int i = 0; i < numSim; i++) {
-            //aca creo numSim cantidad de algoritmos simples
+            //aca creo numSim cantidad de algoritmos simples}
+            jugadores.add(new JugadorSimple());
             
         }
         for (int i = 0; i < numAva; i++) {
             //aca creo numAva cantidad de algoritmos avanzados
-            
+            jugadores.add(new JugadorAvanzado());
         }
         //crear la matriz tablero
         this.matrizFichas = new Ficha[9][17];//el tamaño variaria
@@ -44,11 +45,11 @@ public class Juego {
             }
         }
         Collections.shuffle(fichas);//revuelve las fichas
-        int contador=1;
+        int contador=0;
         int x = fichas.size()/jugadores.size();
         for (int i = 0; i<jugadores.size();i++){
             for (int j = 0;j <x ;j++){
-                jugadores.get(i).addFichas(fichas.get(j+(x*(contador-1))));
+                jugadores.get(i).addFichas(fichas.get(j+(x*(contador))));
             } 
             contador++;
         }
@@ -92,5 +93,6 @@ public class Juego {
     public void setFichas(ArrayList<Ficha> fichas) {
         this.fichas = fichas;
     }
-
+    
+    
 }
