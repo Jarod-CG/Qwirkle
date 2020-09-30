@@ -19,8 +19,8 @@ public class Jugador {
     
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
-    private Jugada primerJugada;
-    private Jugada ultimaJugada;
+    private Movimiento primerJugada;
+    private Movimiento ultimaJugada;
     private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
     private boolean segundaJugada=false;
@@ -75,7 +75,7 @@ public class Jugador {
     public int jugadaValida(Ficha ficha, int fila, int columna) {
         int puntos = 0;
         if (primerJugada != null) {
-            ultimaJugada = new Jugada(fila,columna,puntos,ficha);
+            ultimaJugada = new Movimiento(fila,columna,puntos,ficha);
             if (!segundaJugada) {
                 this.determinarTipoJugada(ficha, fila, columna);
                 segundaJugada=true;
@@ -107,7 +107,7 @@ public class Jugador {
             if (validarColor(ficha, fila, columna) > 0) {
                 puntos += validarColor(ficha, fila, columna);
             }            
-            this.primerJugada = new Jugada(fila,columna,puntos,ficha);
+            this.primerJugada = new Movimiento(fila,columna,puntos,ficha);
             this.ultimaJugada = primerJugada;
         }
 
@@ -142,12 +142,12 @@ public class Jugador {
     
     /*  
         Posibles jugadas
-        [{Jugada(2,3->5),Jugada(5,6->2)},
-        {Jugada(2,3->5)},
-        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5),Jugada(5,6->2)},
+        [{Movimiento(2,3->5),Movimiento(5,6->2)},
+        {Movimiento(2,3->5)},
+        {Movimiento(2,3->5),Movimiento(5,6->2)},Movimiento(2,3->5),Movimiento(5,6->2)},
         {},
-        {Jugada(2,3->5),Jugada(5,6->2)}},
-        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5)}] 
+        {Movimiento(2,3->5),Movimiento(5,6->2)}},
+        {Movimiento(2,3->5),Movimiento(5,6->2)},Movimiento(2,3->5)}] 
          */
     public int validarFigura(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
         int puntos = 0;

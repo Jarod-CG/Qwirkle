@@ -20,7 +20,7 @@ public class Juego {
     private Ficha fichaActual;
     private ArrayList<Ficha> fichas;
     private JugadaType tipoJugadaActual;
-    private Jugada primerJugada;
+    private Movimiento primerJugada;
 
     public Juego(int numSim, int numAva, int numHum) {
         this.tipoJugadaActual = null;
@@ -88,7 +88,7 @@ public class Juego {
             if (validarColor(ficha, fila, columna) > 0) {
                 puntos += validarColor(ficha, fila, columna);
             }            
-            this.primerJugada = new Jugada(fila,columna,puntos,ficha);
+            this.primerJugada = new Movimiento(fila,columna,puntos,ficha);
         }
 
         return puntos;
@@ -108,12 +108,12 @@ public class Juego {
     
     /*  
         Posibles jugadas
-        [{Jugada(2,3->5),Jugada(5,6->2)},
-        {Jugada(2,3->5)},
-        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5),Jugada(5,6->2)},
+        [{Movimiento(2,3->5),Movimiento(5,6->2)},
+        {Movimiento(2,3->5)},
+        {Movimiento(2,3->5),Movimiento(5,6->2)},Movimiento(2,3->5),Movimiento(5,6->2)},
         {},
-        {Jugada(2,3->5),Jugada(5,6->2)}},
-        {Jugada(2,3->5),Jugada(5,6->2)},Jugada(2,3->5)}] 
+        {Movimiento(2,3->5),Movimiento(5,6->2)}},
+        {Movimiento(2,3->5),Movimiento(5,6->2)},Movimiento(2,3->5)}] 
          */
     public int validarFigura(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
         int puntos = 0;
@@ -311,11 +311,11 @@ public class Juego {
         this.tipoJugadaActual = tipoJugadaActual;
     }
 
-    public Jugada getPrimerJugada() {
+    public Movimiento getPrimerJugada() {
         return primerJugada;
     }
 
-    public void setPrimerJugada(Jugada primerJugada) {
+    public void setPrimerJugada(Movimiento primerJugada) {
         this.primerJugada = primerJugada;
     }
     

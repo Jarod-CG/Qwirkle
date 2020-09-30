@@ -9,14 +9,15 @@ package Modelo;
  *
  * @author Jarod
  */
-public class Jugada {
+public class Movimiento {
     
     private int fila;
     private int columna;
     private int puntos;
     private Ficha ficha;
+    
 
-    public Jugada(int fila, int columna, int puntos, Ficha ficha) {
+    public Movimiento(int fila, int columna, int puntos, Ficha ficha) {
         this.fila = fila;
         this.columna = columna;
         this.puntos = puntos;

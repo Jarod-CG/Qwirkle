@@ -16,19 +16,19 @@ public class JugadorSimple extends Jugador{
     //no es de pares y valor
     
     //matriz de soluciones
-    public ArrayList<ArrayList<Jugada>> jugar (Ficha[][] matriz, Ficha[] mano){
-        ArrayList<ArrayList<Jugada>> arr = new ArrayList();
+    public ArrayList<ArrayList<Movimiento>> jugar (Ficha[][] matriz, Ficha[] mano){
+        ArrayList<ArrayList<Movimiento>> arr = new ArrayList();
         arr.addAll(0, jugar_aux(matriz, mano, mano.length, new ArrayList()));
         return arr;
     }
-    
+
     
     //[(2,3),(12,4),(0,1),null,(4,3)]
     //integrar jugadaValida en el backtracking
     //lista de jugadas
-    private ArrayList<Jugada> jugar_aux (Ficha[][] matriz, Ficha[] mano, int num, ArrayList<Jugada> solucion) {
+    private ArrayList<Movimiento> jugar_aux (Ficha[][] matriz, Ficha[] mano, int num, ArrayList<Movimiento> solucion) {
         if (listo(mano, solucion)){//cambiar condicion de parada
-            return solucion;
+            return (ArrayList<Movimiento>) solucion;//hacer una copia
         }
         else {
             //recorre la mano
@@ -47,8 +47,12 @@ public class JugadorSimple extends Jugador{
             return new ArrayList();
             */
             //----------------------------------
+            //crear subconjuntos de soluciones de la mano
+            //que cimpartan figura o color
+            
+            
             Ficha fichaActual = siguienteFicha (mano, solucion);//obtengo la primer ficha de la mano que no este en la solucion
-            ArrayList<Jugada> posicionesMano = posiblesPosiciones(matriz, fichaActual, solucion);//me retorna todas la posibles mano
+            ArrayList<Movimiento> posicionesMano = posiblesPosiciones(matriz, fichaActual, solucion);//me retorna todas la posibles mano
             //utilizo la funcion de Carlos
             for (int i = 0; i < posicionesMano.size(); i++) {
                 solucion.add(posicionesMano.get(i));
@@ -61,7 +65,7 @@ public class JugadorSimple extends Jugador{
     
     //retorna true si ya no hay más fichas no posibles jugadas
     //si existe una jugada de tres fichas no considera la misma jugada con dos fichas
-    private boolean listo(Ficha[] mano, ArrayList<Jugada> solucion){
+    private boolean listo(Ficha[] mano, ArrayList<Movimiento> solucion){
         boolean done = false;
         if (siguienteFicha(mano , solucion)==null ){
             done = true;
@@ -71,7 +75,7 @@ public class JugadorSimple extends Jugador{
         return done;
     }
     
-    private ArrayList<Jugada> posiblesPosiciones (Ficha[][] matriz, Ficha ficha, ArrayList<Jugada> solucion){
+    private ArrayList<Movimiento> posiblesPosiciones (Ficha[][] matriz, Ficha ficha, ArrayList<Movimiento> solucion){
         //ArrayList<Jugada> posiciones = new ArrayList();
         //Ficha[][] matrizTemp = generarMatriz (matriz, solucion);//me retorna una matriz donde tengo la solucion insertada en la matriz
 
@@ -89,17 +93,17 @@ public class JugadorSimple extends Jugador{
         return todaLaMatriz(matriz, ficha);//recorre toda la matriz en busca de todos los lugares que quepa
     }
     
-    private ArrayList<Jugada> todaLaMatriz (Ficha[][] matriz, Ficha ficha){
-        ArrayList<Jugada> posibles = new ArrayList();
+    private ArrayList<Movimiento> todaLaMatriz (Ficha[][] matriz, Ficha ficha){
+        ArrayList<Movimiento> posibles = new ArrayList();
         if (matriz[7][9]==null){//no hay nada en el centro
-            posibles.add(new Jugada(7,9,1,ficha));
+            posibles.add(new Movimiento(7,9,1,ficha));
         }
         else {
             for (int i = 0; i < matriz.length; i++) {
                 for (int j = 0; j < matriz[i].length; j++) {
                     int puntos = jugadaValida(ficha, i, j);
                     if (puntos>0){//si es mayor a cero es que es valida
-                        posibles.add(new Jugada(i,j,puntos,ficha));
+                        posibles.add(new Movimiento(i,j,puntos,ficha));
                     }
                 }
             }
@@ -108,7 +112,7 @@ public class JugadorSimple extends Jugador{
     }
     
     //retorna la siguiente ficha que no este en la mano
-    private Ficha siguienteFicha (Ficha[] mano, ArrayList<Jugada> solucion){
+    private Ficha siguienteFicha (Ficha[] mano, ArrayList<Movimiento> solucion){
         for (int i = 0; i < mano.length; i++) {
             if (!isInSolucion(mano[i], solucion)){
                 return mano[i];
@@ -118,7 +122,7 @@ public class JugadorSimple extends Jugador{
     }
     
     //retorna truee si la ficha ya esta en la solucion
-    private boolean isInSolucion(Ficha ficha, ArrayList<Jugada> solucion){
+    private boolean isInSolucion(Ficha ficha, ArrayList<Movimiento> solucion){
         for (int i = 0; i < solucion.size(); i++) {
             if (ficha.equals(solucion.get(i).getFicha())){
                 return true;
