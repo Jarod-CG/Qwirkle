@@ -11,71 +11,99 @@ import java.util.ArrayList;
  *
  * @author Jarod
  */
-public class JugadorSimple extends Jugador{
-        //por ahora la lista es de pares
+public class JugadorSimple extends Jugador {
+    //por ahora la lista es de pares
     //no es de pares y valor
-    
+
     //matriz de soluciones
-    public ArrayList<ArrayList<Movimiento>> jugar (Ficha[][] matriz, Ficha[] mano){
+    public ArrayList<ArrayList<Movimiento>> jugar(Ficha[][] matriz, Ficha[] mano) {
         ArrayList<ArrayList<Movimiento>> arr = new ArrayList();
-        arr.addAll(0, jugar_aux(matriz, mano, mano.length, new ArrayList()));
+
+        //obtengo todos los subconjuntos de posibles de la mano
+        ArrayList<ArrayList<Ficha>> combinaciones = combinaciones(mano);
+        for (int i = 0; i < combinaciones.size(); i++) {
+            //ahora utiliza cada una de las combinaciones, en busca de todas sus soluciones
+            arr.addAll(0, jugar_aux(matriz, convertir(combinaciones.get(i)), new ArrayList()));
+        }
         return arr;
     }
 
-    
     //[(2,3),(12,4),(0,1),null,(4,3)]
     //integrar jugadaValida en el backtracking
     //lista de jugadas
-    private ArrayList<Movimiento> jugar_aux (Ficha[][] matriz, Ficha[] mano, int num, ArrayList<Movimiento> solucion) {
-        if (listo(mano, solucion)){//cambiar condicion de parada
+    private ArrayList<Movimiento> jugar_aux(Ficha[][] matriz, Ficha[] combinacion, ArrayList<Movimiento> solucion) {
+        if (true) {//cambiar condicion de parada
             return (ArrayList<Movimiento>) solucion;//hacer una copia
-        }
-        else {
-            //recorre la mano
-            //posiblemente usar swap que usa el profe
-            /*
-            for (int i = 0; i < num; i++) {
-                ArrayList<Jugada> posicionesMano = posiblesPosiciones(matriz, mano, i, solucion);
-                //ir probando cada uno de las posiciones de la ficha
-                for (int j = 0; j < posicionesMano.size(); j++) {
-                    //quizas aqui vaya el swap de fichas
-                    solucion.add(posicionesMano.get(j));
-                    jugar_aux (matriz, mano, num-1, solucion);
-                    //deshace el swap
-                }
-            }
-            return new ArrayList();
-            */
-            //----------------------------------
-            //crear subconjuntos de soluciones de la mano
-            //que cimpartan figura o color
+        } else {
+
+            Ficha fichaActual = siguienteFicha(combinacion, solucion);//obtengo la primer ficha de la mano que no este en la solucion
             
-            
-            Ficha fichaActual = siguienteFicha (mano, solucion);//obtengo la primer ficha de la mano que no este en la solucion
+            //deshacer esta linea
             ArrayList<Movimiento> posicionesMano = posiblesPosiciones(matriz, fichaActual, solucion);//me retorna todas la posibles mano
+            
             //utilizo la funcion de Carlos
             for (int i = 0; i < posicionesMano.size(); i++) {
+                //asegurarme que permuta
                 solucion.add(posicionesMano.get(i));
-                jugar_aux(matriz, mano, num,solucion);
+                jugar_aux(matriz, combinacion, solucion);
                 solucion.remove(posicionesMano.get(i));
             }
         }
         return null;
-    } 
-    
-    //retorna true si ya no hay más fichas no posibles jugadas
-    //si existe una jugada de tres fichas no considera la misma jugada con dos fichas
-    private boolean listo(Ficha[] mano, ArrayList<Movimiento> solucion){
-        boolean done = false;
-        if (siguienteFicha(mano , solucion)==null ){
-            done = true;
+    }
+
+    //retorna todas las combinaciones que comparten una propiedad
+    private ArrayList<ArrayList<Ficha>> combinaciones(Ficha[] mano) {
+        ArrayList<ArrayList<Ficha>> lista = new ArrayList();
+        partesDe(lista, new ArrayList(), mano, 0);
+        ArrayList<ArrayList<Ficha>> remover = new ArrayList();
+        //validar que compartand una propiedad
+        //recorre cada subconjunto
+        for (int i = 0; i < lista.size(); i++) {
+            //recorre el subconjunto
+            ArrayList<Ficha> sub = lista.get(i);
+            if (sub.size() > 1) {//todos los de tamaño 1 son validos
+                for (int j = 1; j < sub.size(); j++) {
+                    if ((!sub.get(j - 1).getColor().equals(sub.get(i).getColor()))
+                            | (!sub.get(j - 1).getFigura().equals(sub.get(i).getFigura()))) {
+                        //si entra es porque el subconjunto no cumple con color o figura
+                        remover.add(sub);
+                        break;
+                    }
+                }
+            }
+
         }
-        
-        
-        return done;
+        for (int i = 0; i < remover.size(); i++) {
+            lista.remove(remover.get(i));
+        }
+        //retorna todas
+        return lista;
+
     }
     
-    private ArrayList<Movimiento> posiblesPosiciones (Ficha[][] matriz, Ficha ficha, ArrayList<Movimiento> solucion){
+    //https://java2blog.com/find-subsets-set-power-set/
+    //retorna todos los subconjuntos
+    private void partesDe(ArrayList<ArrayList<Ficha>> lista, ArrayList<Ficha> resultado, Ficha[] mano, int inic) {
+        lista.add(new ArrayList(resultado));
+        for (int i = inic; i < mano.length; i++) {
+            resultado.add(mano[i]);
+            partesDe(lista, resultado, mano, i + 1);
+            resultado.remove(resultado.size() - 1);
+        }
+    }
+
+    //convierte de arraylist a arreglo 
+    private Ficha[] convertir (ArrayList<Ficha> lista){
+        Ficha[] lisFi = new Ficha[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            lisFi[i] = lista.get(i);
+        }
+        return lisFi;
+    }
+    
+    
+    private ArrayList<Movimiento> posiblesPosiciones(Ficha[][] matriz, Ficha ficha, ArrayList<Movimiento> solucion) {
         //ArrayList<Jugada> posiciones = new ArrayList();
         //Ficha[][] matrizTemp = generarMatriz (matriz, solucion);//me retorna una matriz donde tengo la solucion insertada en la matriz
 
@@ -92,13 +120,12 @@ public class JugadorSimple extends Jugador{
         }*/
         return todaLaMatriz(matriz, ficha);//recorre toda la matriz en busca de todos los lugares que quepa
     }
-    
-    private ArrayList<Movimiento> todaLaMatriz (Ficha[][] matriz, Ficha ficha){
+
+    private ArrayList<Movimiento> todaLaMatriz(Ficha[][] matriz, Ficha ficha) {
         ArrayList<Movimiento> posibles = new ArrayList();
-        if (matriz[7][9]==null){//no hay nada en el centro
-            posibles.add(new Movimiento(7,9,1,ficha));
-        }
-        else {
+        if (matriz[7][9] == null) {//no hay nada en el centro
+            posibles.add(new Movimiento(7, 9, 1, ficha));
+        } else {
             for (int i = 0; i < matriz.length; i++) {
                 for (int j = 0; j < matriz[i].length; j++) {
                    /* int puntos = jugadaValida(ficha, i, j);
@@ -110,21 +137,21 @@ public class JugadorSimple extends Jugador{
         }
         return posibles;
     }
-    
+
     //retorna la siguiente ficha que no este en la mano
-    private Ficha siguienteFicha (Ficha[] mano, ArrayList<Movimiento> solucion){
+    private Ficha siguienteFicha(Ficha[] mano, ArrayList<Movimiento> solucion) {
         for (int i = 0; i < mano.length; i++) {
-            if (!isInSolucion(mano[i], solucion)){
+            if (!isInSolucion(mano[i], solucion)) {
                 return mano[i];
             }
         }
         return null;
     }
-    
+
     //retorna truee si la ficha ya esta en la solucion
-    private boolean isInSolucion(Ficha ficha, ArrayList<Movimiento> solucion){
+    private boolean isInSolucion(Ficha ficha, ArrayList<Movimiento> solucion) {
         for (int i = 0; i < solucion.size(); i++) {
-            if (ficha.equals(solucion.get(i).getFicha())){
+            if (ficha.equals(solucion.get(i).getFicha())) {
                 return true;
             }
         }
