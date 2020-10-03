@@ -31,22 +31,22 @@ public class JugadorSimple extends Jugador {
             permutarFichas (combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
             //ahora recorro cada una de las permutaciones
             for (int j = 0; j < permutacionesDe.size(); j++) {
-                
+                jugar_aux (matriz, permutacionesDe.get(i), new ArrayList(), arr);
             }
         }
         return arr;
     }
 
-    //esta funcion es inutil
+    
     //[(2,3),(12,4),(0,1),null,(4,3)]
     //integrar jugadaValida en el backtracking
     //lista de jugadas
-    private ArrayList<Movimiento> jugar_aux(Ficha[][] matriz, Ficha[] combinacion, ArrayList<Movimiento> solucion) {
+    private ArrayList<Movimiento> jugar_aux(Ficha[][] matriz, ArrayList<Ficha> permutacion, ArrayList<Movimiento> solucion,ArrayList<ArrayList<Movimiento>> arr) {
         if (true) {//cambiar condicion de parada
-            return (ArrayList<Movimiento>) solucion;//hacer una copia
+            arr.add(solucion);
         } else {
 
-            Ficha fichaActual = siguienteFicha(combinacion, solucion);//obtengo la primer ficha de la mano que no este en la solucion
+            Ficha fichaActual = siguienteFicha(permutacion, solucion);//obtengo la primer ficha de la mano que no este en la solucion
             
             //deshacer esta linea
             ArrayList<Movimiento> posicionesMano = posiblesPosiciones(matriz, fichaActual, solucion);//me retorna todas la posibles mano
@@ -55,7 +55,7 @@ public class JugadorSimple extends Jugador {
             for (int i = 0; i < posicionesMano.size(); i++) {
                 //asegurarme que permuta
                 solucion.add(posicionesMano.get(i));
-                jugar_aux(matriz, combinacion, solucion);
+                jugar_aux(matriz, permutacion, solucion,arr);
                 solucion.remove(posicionesMano.get(i));
             }
         }
@@ -167,10 +167,10 @@ public class JugadorSimple extends Jugador {
     }
 
     //retorna la siguiente ficha que no este en la mano
-    private Ficha siguienteFicha(Ficha[] mano, ArrayList<Movimiento> solucion) {
-        for (int i = 0; i < mano.length; i++) {
-            if (!isInSolucion(mano[i], solucion)) {
-                return mano[i];
+    private Ficha siguienteFicha(ArrayList<Ficha> mano, ArrayList<Movimiento> solucion) {
+        for (int i = 0; i < mano.size(); i++) {
+            if (!isInSolucion(mano.get(i), solucion)) {
+                return mano.get(i);
             }
         }
         return null;
