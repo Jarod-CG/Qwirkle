@@ -5,13 +5,17 @@
  */
 package Modelo;
 
+import Controlador.Controlador;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
  * @author Jarod
  */
 public class JugadorSimple extends Jugador {
+
+    
     //por ahora la lista es de pares
     //no es de pares y valor
 
@@ -22,12 +26,18 @@ public class JugadorSimple extends Jugador {
         //obtengo todos los subconjuntos de posibles de la mano
         ArrayList<ArrayList<Ficha>> combinaciones = combinaciones(mano);
         for (int i = 0; i < combinaciones.size(); i++) {
-            //ahora utiliza cada una de las combinaciones, en busca de todas sus soluciones
-            arr.addAll(0, jugar_aux(matriz, convertir(combinaciones.get(i)), new ArrayList()));
+            //permuto cada combinacion
+            ArrayList<ArrayList<Ficha>> permutacionesDe = new ArrayList();
+            permutarFichas (combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
+            //ahora recorro cada una de las permutaciones
+            for (int j = 0; j < permutacionesDe.size(); j++) {
+                
+            }
         }
         return arr;
     }
 
+    //esta funcion es inutil
     //[(2,3),(12,4),(0,1),null,(4,3)]
     //integrar jugadaValida en el backtracking
     //lista de jugadas
@@ -50,6 +60,23 @@ public class JugadorSimple extends Jugador {
             }
         }
         return null;
+    }
+    
+    
+    public void permutarFichas (ArrayList<Ficha> conjunto, int tamano, ArrayList<ArrayList<Ficha>> todas) {
+        if (0 == tamano) {
+            
+            ArrayList<Ficha> nuevo = (ArrayList<Ficha>) conjunto.clone();
+            
+            todas.add(nuevo);
+        }
+        else {
+            for (int i = 0; i < tamano; i++) {
+                Collections.swap(conjunto, tamano-1, i);
+                permutarFichas (conjunto, tamano-1, todas);
+                Collections.swap(conjunto, tamano-1, i);
+            }
+        }
     }
 
     //retorna todas las combinaciones que comparten una propiedad
@@ -83,17 +110,6 @@ public class JugadorSimple extends Jugador {
     }
     
     
-    [1,2,3]
-    [[1],[2],[3],[1,2],[1,2,3]]
-    
-    1
-    2
-    3
-    1 2
-    2 1
-    1 2 3
-    1 3 2
-    2 1 3
     
     //https://java2blog.com/find-subsets-set-power-set/
     //retorna todos los subconjuntos
@@ -170,4 +186,60 @@ public class JugadorSimple extends Jugador {
         }
         return false;
     }
+    
+    
+    public static void main(String[] args) {
+        // TODO code application logic here
+        ArrayList<Integer> conjunto = new ArrayList();
+        conjunto.add(1);
+        conjunto.add(2);
+        conjunto.add(3);
+        
+        ArrayList<Integer> solucion = new ArrayList();
+        
+        int posicion = 1;
+        
+        
+        ArrayList<ArrayList<Integer>> todas = new ArrayList();
+        
+        permutaciones(conjunto, conjunto.size(), todas);
+        System.out.println("gato");
+        for (int i = 0; i < todas.size(); i++) {
+            System.out.println("g");
+            for (int j = 0; j < todas.get(i).size(); j++) {
+                
+                System.out.print(todas.get(i).get(j));
+                System.out.print("");
+            }
+            System.out.println("pero");
+            System.out.println("");
+        }
+        
+    }
+    
+    public static void permutaciones ( ArrayList<Integer> conjunto, int tamano, ArrayList<ArrayList<Integer>> todas ) {
+        
+        if (0 == tamano) {
+            
+            ArrayList<Integer> nuevo = (ArrayList<Integer>) conjunto.clone();
+            
+            todas.add(nuevo);
+        }
+        else {
+            for (int i = 0; i < tamano; i++) {
+                Collections.swap(conjunto, tamano-1, i);
+                permutaciones (conjunto, tamano-1, todas);
+                Collections.swap(conjunto, tamano-1, i);
+            }
+        }
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 }
