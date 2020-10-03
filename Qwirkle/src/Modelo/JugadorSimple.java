@@ -109,8 +109,7 @@ public class JugadorSimple extends Jugador {
 
     }
     
-    
-    
+
     //https://java2blog.com/find-subsets-set-power-set/
     //retorna todos los subconjuntos
     private void partesDe(ArrayList<ArrayList<Ficha>> lista, ArrayList<Ficha> resultado, Ficha[] mano, int inic) {
@@ -157,10 +156,10 @@ public class JugadorSimple extends Jugador {
         } else {
             for (int i = 0; i < matriz.length; i++) {
                 for (int j = 0; j < matriz[i].length; j++) {
-                    int puntos = jugadaValida(ficha, i, j);
-                    if (puntos > 0) {//si es mayor a cero es que es valida
-                        posibles.add(new Movimiento(i, j, puntos, ficha));
-                    }
+                   /* int puntos = jugadaValida(ficha, i, j);
+                    if (puntos>0){//si es mayor a cero es que es valida
+                        posibles.add(new Movimiento(i,j,puntos,ficha));
+                    }*/
                 }
             }
         }

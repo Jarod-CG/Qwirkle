@@ -19,17 +19,17 @@ public class Jugador {
     
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
-    private Movimiento primerJugada;
-    private Movimiento ultimaJugada;
+    private DireccionType direccionSegundaFicha;
+    private Movimiento primerJugada = null;
+    private boolean segundaJugada = false;
+    private Movimiento ultimaJugada = null;
     private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
-    private boolean segundaJugada=false;
     
 
     public Jugador() {
         this.fichas = new ArrayList();
         this.mano = new Ficha[6];
-
     }
     
     
@@ -69,69 +69,121 @@ public class Jugador {
     public void setOrientacion(OrientacionType orientacion) {
         this.orientacion = orientacion;
     }
+
+    public DireccionType getDireccionSegundaFicha() {
+        return direccionSegundaFicha;
+    }
+
+    public void setDireccionSegundaFicha(DireccionType direccionSegundaFicha) {
+        this.direccionSegundaFicha = direccionSegundaFicha;
+    }
     
-    
-    
-    public int jugadaValida(Ficha ficha, int fila, int columna) {
-        int puntos = 0;
-        if (primerJugada != null) {
-            ultimaJugada = new Movimiento(fila,columna,puntos,ficha);
-            if (!segundaJugada) {
-                this.determinarTipoJugada(ficha, fila, columna);
-                segundaJugada=true;
-            }
-            
-            if (this.tipoJugadaActual == JugadaType.PORFIGURA && this.orientacion == OrientacionType.COLUMNA) {
-                
-                    if (validarFigura(ficha, fila, primerJugada.getColumna()) > 0) {
-                        puntos += validarFigura(ficha, fila, columna);
+    public ArrayList<Movimiento> getListaPrimerosMovimientos(Ficha ficha){
+        ArrayList<Movimiento> primerosMovimientos = new ArrayList<>();
+        for (int fila = 0; fila < this.matrizFichas.length; fila++) {
+            for (int columna = 0; columna < this.matrizFichas.length; columna++) {
+                if (this.matrizFichas[fila][columna] == null) {
+                    int puntos = calcularPuntos(ficha, fila, columna);
+                    if (puntos > 0) {
+                        primerosMovimientos.add(new Movimiento(fila, columna, puntos, ficha));
                     }
-            } 
-            else if (this.tipoJugadaActual == JugadaType.PORFIGURA && this.orientacion == OrientacionType.FILA) {
-                
-            }
-            else if (this.tipoJugadaActual == JugadaType.PORCOLOR && this.orientacion == OrientacionType.COLUMNA) {
-                
-            }
-            else {//ESTE ES PORCOLOR Y FILA
-                if (validarColor(ficha, fila, columna) > 0) {
-                    puntos += validarColor(ficha, fila, columna);
                 }
             }
         }
-
-        if (primerJugada == null) {
-            if (validarFigura(ficha, fila, columna) > 0) {
-                puntos += validarFigura(ficha, fila, columna);
-            }
-            if (validarColor(ficha, fila, columna) > 0) {
-                puntos += validarColor(ficha, fila, columna);
-            }            
-            this.primerJugada = new Movimiento(fila,columna,puntos,ficha);
-            this.ultimaJugada = primerJugada;
-        }
-
-        return puntos;
+        return primerosMovimientos;
     }
+    
+    /*
+    [0,1,2,3,4,5,6,7,8,9]
+    [%,%,%,%,%,%,%,%,%,%]
+    [%,%,%,y,h,t,%,%,%,%]
+    [%,%,%,h,%,%,%,%,%,%]
+    [%,%,%,%,%,%,%,%,%,%]
+    [%,%,%,%,%,%,%,%,%,%]
+    */
+    public Jugada crearJugada(ArrayList<Ficha> subconjunto, DireccionType direccion, Movimiento primerMov) {
+        Jugada jugada = new Jugada();
+        jugada.setPrimerMovimiento(primerMov);
+        jugada.add(jugada.getPrimerMovimiento());
+        for (int i = 1; i < subconjunto.size(); i++) {
+            if (direccion == DireccionType.DERECHA || direccion == DireccionType.IZQUIERDA) {
+                jugada.setOrientacion(OrientacionType.FILA);
+                for (int j = primerMov.getColumna() + direccion.getValor(); matrizFichas[primerMov.getFila()][j] == null && j > 0 && j < matrizFichas.length; j += direccion.getValor()){
+                    int puntos = calcularPuntos(subconjunto.get(i), primerMov.getFila(), j);
+                    if (puntos > 0) {
+                        Movimiento movimiento = new Movimiento(primerMov.getFila(), j, puntos, subconjunto.get(i));
+                        jugada.add(movimiento);
+                        jugada.sumarPuntos(puntos);
+                    }else{
+                        return null;
+                    }
+                }
+            }else{
+                jugada.setOrientacion(OrientacionType.COLUMNA);
+                for (int j = primerMov.getFila() + direccion.getValor(); matrizFichas[j][primerMov.getColumna()] == null && j > 0 && j < matrizFichas.length; j += direccion.getValor()){
+                    int puntos = calcularPuntos(subconjunto.get(i), j, primerMov.getColumna());
+                    if (puntos > 0) {
+                        Movimiento movimiento = new Movimiento(j, primerMov.getColumna(), puntos, subconjunto.get(i));
+                        jugada.add(movimiento);
+                        jugada.sumarPuntos(puntos);
+                    }else{
+                        return null;
+                    }
+                }
+            }
+        }
+        return jugada;
+    }
+    
+    
+    
+    public ArrayList<Jugada> getListaJugadas(ArrayList<Ficha> subconjunto) { //AQUI LAS PERMUTACIONES DE LA MANO 
+        ArrayList<Jugada> jugadas = new ArrayList<>();
+        
+        ArrayList<Movimiento> primerosMovimientos = getListaPrimerosMovimientos(subconjunto.get(0));
+        if (subconjunto.size() > 1) {
+            for (Movimiento primerMovimiento : primerosMovimientos) {
+                for (DireccionType direccion : DireccionType.values()) {
+                    Jugada jugada = crearJugada(subconjunto, direccion,primerMovimiento);
+                    if(jugada != null){
+                        jugadas.add(jugada);
+                    }
+                }
+            }
+        }
+        /*for (Ficha ficha : subconjunto) {            
+            if (jugada.getPrimerMovimiento() == null) { //CREA LA PRIMERA JUGADA
+                
+            } else {
+                if (this.segundaJugada == false) {
+                    
+                }
+            }   
+        }*/
+        //jugadas.add(jugada);
+        return jugadas;
+    }
+    
     //aqui asignamos  tipo y orientacion
     public void determinarTipoJugada(Ficha ficha, int fila, int columna){
         if(ficha.getTipo() != primerJugada.getFicha().getTipo()){
-            if (ficha.getColor() == primerJugada.getFicha().getColor()) {
+            //AQUI DETERMINA EL TIPO DE JUGADA
+            if(ficha.getColor() == primerJugada.getFicha().getColor()){
                 this.setTipoJugadaActual(JugadaType.PORCOLOR);
-            } else if(ficha.getFigura() == primerJugada.getFicha().getFigura()) {
+            }else if(ficha.getFigura() == primerJugada.getFicha().getFigura()) {
                 this.setTipoJugadaActual(JugadaType.PORFIGURA);
-            }
-            else {
+            }else{
                 this.setTipoJugadaActual(null);
-            }  
+            }
             
+            //AQUI DETERMINA EL TIPO DE ORIENTACION
             if (fila == primerJugada.getFila()){
                 this.setOrientacion(OrientacionType.FILA);
-            }
-            else if (columna == primerJugada.getColumna()){
+            
+            }else if (columna == primerJugada.getColumna()){
                 this.setOrientacion(OrientacionType.COLUMNA);
-            }
-            else {
+            
+            }else{
                 this.setOrientacion(null);
             }
         }else{
@@ -149,6 +201,20 @@ public class Jugador {
         {Movimiento(2,3->5),Movimiento(5,6->2)}},
         {Movimiento(2,3->5),Movimiento(5,6->2)},Movimiento(2,3->5)}] 
          */
+    public int calcularPuntos(Ficha ficha, int fila, int columna){
+        int puntos = 0;
+        if (validarFigura(ficha, fila, columna) > 0) {
+            puntos += validarFigura(ficha, fila, columna);
+        }
+        if (validarColor(ficha, fila, columna) > 0) {
+            puntos += validarColor(ficha, fila, columna);
+        }        
+        if (puntos > 0) {
+            return puntos;
+        }
+        return 0;
+    }
+    
     public int validarFigura(Ficha fichaActual,int fila, int columna){ //determina si la figura calza en la posición
         int puntos = 0;
         //boolean res = false;
