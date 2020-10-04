@@ -16,6 +16,15 @@ import java.util.Collections;
 public class JugadorSimple extends Jugador {
 
     
+    //mano
+    //saca combinaciones de mano
+    //luego las combinaciones que comparten una caracteristica (figura/color)
+    //luego las combinaciones validas las procede a permutar
+    //y ahora a cada ficha de las permutaciones busca las posiciones
+    //y despues las va combinando entre ellas
+    
+    
+    
     //por ahora la lista es de pares
     //no es de pares y valor
 
