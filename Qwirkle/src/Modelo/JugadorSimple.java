@@ -15,7 +15,7 @@ import java.util.Collections;
  *
  * @author Jarod
  */
-public class JugadorSimple extends Jugador {
+public class JugadorSimple /*extends Jugador*/ {
 
     
     //mano

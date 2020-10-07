@@ -21,34 +21,34 @@ public class Juego {
     private ArrayList<Ficha> fichas;
     private JugadaType tipoJugadaActual;
     private Movimiento primerJugada;
-
     
     private int turno;
 
 
     public Juego(int numSim, int numAva, int numHum, int n) {
         this.turno = 0;
-
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
+        
+        this.matrizFichas = new Ficha[n][n];//el tamaño variaria
         if (numHum == 1) {
             //crea un jugador humano
             jugadores.add(new MiJugador());
         }
         for (int i = 0; i < numSim; i++) {
 
-            jugadores.add(new Jugador());
+            jugadores.add(new Jugador(matrizFichas));
 
             
         }
         for (int i = 0; i < numAva; i++) {
 
-            jugadores.add(new Jugador());
+            jugadores.add(new Jugador(matrizFichas));
             
 
         }
         //crear la matriz tablero
-        this.matrizFichas = new Ficha[n][n];//el tamaño variaria
+        
         //asignar las fichas
         crearFichas();
         repartirFichas();
@@ -61,8 +61,7 @@ public class Juego {
     private void setInicio(){
         float f  = (matrizFichas.length/2);
         int x = Math.round(f);
-        System.out.println(x);
-        System.out.println(matrizFichas.length);
+        
         matrizFichas[x][x] = jugadores.get(0).getMano()[0];
         jugadores.get(0).getMano()[0] = null;
         jugadores.get(0).actualizarMano();
@@ -106,7 +105,6 @@ public class Juego {
     }
     
     
-
     public void jugar () {
         Jugador jugador = jugadores.get(turno++%jugadores.size());
         
@@ -129,7 +127,6 @@ public class Juego {
     }
     
     
-
     public int jugadaValida(Ficha ficha, int fila, int columna) {
         int puntos = 0;
         if (primerJugada != null) {
@@ -387,3 +384,4 @@ public class Juego {
     
 
 }
+
