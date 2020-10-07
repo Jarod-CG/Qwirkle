@@ -21,4 +21,7 @@ public class Qwirkle {
         Controlador controlador = new Controlador();
     }
     
+    
+    
+    
 }
