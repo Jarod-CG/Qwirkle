@@ -21,12 +21,14 @@ public class Juego {
     private ArrayList<Ficha> fichas;
     private JugadaType tipoJugadaActual;
     private Movimiento primerJugada;
+
     
     private int turno;
 
 
     public Juego(int numSim, int numAva, int numHum, int n) {
         this.turno = 0;
+
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
         if (numHum == 1) {
@@ -104,6 +106,7 @@ public class Juego {
     }
     
     
+
     public void jugar () {
         Jugador jugador = jugadores.get(turno++%jugadores.size());
         
@@ -126,6 +129,7 @@ public class Juego {
     }
     
     
+
     public int jugadaValida(Ficha ficha, int fila, int columna) {
         int puntos = 0;
         if (primerJugada != null) {

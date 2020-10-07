@@ -7,17 +7,21 @@ package Modelo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.Collections;
+
 
 /**
  *
  * @author Carlos
  */
+
 public class Jugador {
 
     protected double puntaje;
     protected ArrayList<Ficha> fichas;
     protected Ficha[] mano;
+
 
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
@@ -27,11 +31,13 @@ public class Jugador {
     private Movimiento ultimaJugada = null;
     private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
+r
 
     public Jugador() {
         this.puntaje = 0;
         this.fichas = new ArrayList();
         this.mano = new Ficha[6];
+
     }
 
     public void sumarPuntaje(int num) {
@@ -49,7 +55,10 @@ public class Jugador {
                 fichas.remove(mano[i]);
             }
         }
+
     }
+    
+    
 
     /*
     elimina la jugada de la mano que utilizaremos en el tablero
@@ -78,6 +87,7 @@ public class Jugador {
         this.fichas = fichas;
     }
     
+
     
     //retorna true si cumple figura
     private boolean jugadaDeFigura (Ficha[][] matrizFichas, Ficha ficha, int[] par ){
@@ -193,6 +203,7 @@ public class Jugador {
     }
     
 
+
     public JugadaType getTipoJugadaActual() {
         return tipoJugadaActual;
     }
@@ -217,7 +228,9 @@ public class Jugador {
         this.direccionSegundaFicha = direccionSegundaFicha;
     }
 
+
     public ArrayList<Movimiento> getListaPrimerosMovimientos(Ficha ficha, ArrayList<Ficha> subconjunto) {
+
         ArrayList<Movimiento> primerosMovimientos = new ArrayList<>();
         for (int fila = 0; fila < this.matrizFichas.length; fila++) {
             for (int columna = 0; columna < this.matrizFichas.length; columna++) {
@@ -231,6 +244,7 @@ public class Jugador {
         }
         return primerosMovimientos;
     }
+
 
     public ArrayList<Movimiento> backTrackingMovimientos(ArrayList<Ficha> sub, OrientacionType ori, int fil, int col, ArrayList<Movimiento> movimientos) {
         if (sub.size() == movimientos.size()) {
@@ -251,12 +265,15 @@ public class Jugador {
 
                     } else {
 
+
                     }
                 }
             }
         }
         return null;
+
     }
+
 
     public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<ArrayList<Movimiento>> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
@@ -266,7 +283,9 @@ public class Jugador {
             for (int i = 0; i < movimientos.size(); i++) {
                 solucion.add(movimientos.get(i));
                 this.matrizFichas[movimientos.get(i).getFila()][movimientos.get(i).getColumna()] = movimientos.get(i).getFicha();
+
                 backtrackingJugadas(num + 1, perm, solucion, arr, primerMov, ori);
+
                 this.matrizFichas[movimientos.get(i).getFila()][movimientos.get(i).getColumna()] = null;
                 solucion.remove(movimientos.get(i));
             }
@@ -288,6 +307,7 @@ public class Jugador {
         }
         return listMovimientos;
     }
+
 
     public ArrayList<Jugada> getListaJugadas(ArrayList<Ficha> subconjunto) { //AQUI LAS PERMUTACIONES DE LA MANO 
         ArrayList<Jugada> jugadas = new ArrayList<>();
@@ -313,12 +333,14 @@ public class Jugador {
     }
 
     public ArrayList<Jugada> convertMoviAJugada(ArrayList<Movimiento> movimientos) {
+
         ArrayList<Jugada> jugadas = new ArrayList<>();
         for (Movimiento movimiento : movimientos) {
             jugadas.add(new Jugada(movimientos));
         }
         return jugadas;
     }
+
 
     public int calcularPuntos(Ficha ficha, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
@@ -500,21 +522,25 @@ public class Jugador {
                 return -1;
             }
             if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+
                 return 1;
             }
             puntos++;
         }
+
         return puntos;
     }
 
     public boolean estaEnLaSubconjunto(ArrayList<Ficha> subconjunto, Ficha ficha) {
         for (Ficha ficha1 : subconjunto) {
             if (ficha == ficha1) {
+
                 return true;
             }
         }
         return false;
     }
+
 
     //aqui asignamos  tipo y orientacion
     public void determinarTipoJugada(Ficha ficha, int fila, int columna) {
@@ -631,5 +657,6 @@ public class Jugador {
             }
         }
         return jugadas;
+
     }
 }
