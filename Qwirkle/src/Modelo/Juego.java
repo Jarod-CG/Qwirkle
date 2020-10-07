@@ -29,24 +29,26 @@ public class Juego {
         this.turno = 0;
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
+        
+        this.matrizFichas = new Ficha[n][n];//el tamaño variaria
         if (numHum == 1) {
             //crea un jugador humano
             jugadores.add(new MiJugador());
         }
         for (int i = 0; i < numSim; i++) {
 
-            jugadores.add(new Jugador());
+            jugadores.add(new Jugador(matrizFichas));
 
             
         }
         for (int i = 0; i < numAva; i++) {
 
-            jugadores.add(new Jugador());
+            jugadores.add(new Jugador(matrizFichas));
             
 
         }
         //crear la matriz tablero
-        this.matrizFichas = new Ficha[n][n];//el tamaño variaria
+        
         //asignar las fichas
         crearFichas();
         repartirFichas();
@@ -59,8 +61,7 @@ public class Juego {
     private void setInicio(){
         float f  = (matrizFichas.length/2);
         int x = Math.round(f);
-        System.out.println(x);
-        System.out.println(matrizFichas.length);
+        
         matrizFichas[x][x] = jugadores.get(0).getMano()[0];
         jugadores.get(0).getMano()[0] = null;
         jugadores.get(0).actualizarMano();

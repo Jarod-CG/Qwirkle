@@ -6,6 +6,8 @@
 package qwirkle;
 
 import Controlador.ControladorMenu;
+import Controlador.ControladorTablero;
+import Modelo.Juego;
 
 /**
  *
@@ -18,7 +20,14 @@ public class Qwirkle {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ControladorMenu controladorMenu = new ControladorMenu();
+        //ControladorMenu controladorMenu = new ControladorMenu();
+        
+        Juego juego = new Juego (3, 0, 0, 15);
+                    
+                    
+        ControladorTablero controladorTablero = new ControladorTablero(juego, 15);
+        
+        
     }
     
     

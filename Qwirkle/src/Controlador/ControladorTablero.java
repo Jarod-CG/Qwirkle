@@ -35,6 +35,16 @@ public class ControladorTablero implements ActionListener {
         _init_();
         update();
     }
+    
+    public ControladorTablero(Juego juego,  int n) {
+        this.juego = juego;
+        this.pantallaTablero = new PantallaTablero();
+        this.pantallaTablero.setN(n);
+        this.pantallaTablero._init_(6, juego.getJugadores().size());
+        this.pantallaTablero.setVisible(true);
+        _init_();
+        update();
+    }
 
     private void _init_() {
 
