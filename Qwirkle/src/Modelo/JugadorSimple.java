@@ -40,7 +40,7 @@ public class JugadorSimple extends Jugador {
             permutarFichas (combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
             //ahora recorro cada una de las permutaciones
             for (int j = 0; j < permutacionesDe.size(); j++) {
-                jugar_aux (matriz, permutacionesDe.get(i), new ArrayList(), arr);
+                jugar_aux (0, matriz, permutacionesDe.get(i), new ArrayList(), arr);
             }
         }
         return arr;
@@ -50,25 +50,26 @@ public class JugadorSimple extends Jugador {
     //[(2,3),(12,4),(0,1),null,(4,3)]
     //integrar jugadaValida en el backtracking
     //lista de jugadas
-    private ArrayList<Movimiento> jugar_aux(Ficha[][] matriz, ArrayList<Ficha> permutacion, ArrayList<Movimiento> solucion,ArrayList<ArrayList<Movimiento>> arr) {
-        if (true) {//cambiar condicion de parada
+    private void jugar_aux(int num, Ficha[][] matriz, ArrayList<Ficha> permutacion, ArrayList<Movimiento> solucion,ArrayList<ArrayList<Movimiento>> arr) {
+        if (num==permutacion.size()) {//cambia cuando el num(indice) sea igual al tamaño de permutacion
             arr.add(solucion);
         } else {
 
-            Ficha fichaActual = siguienteFicha(permutacion, solucion);//obtengo la primer ficha de la mano que no este en la solucion
+            //Ficha fichaActual = siguienteFicha(permutacion, solucion);//obtengo la primer ficha de la mano que no este en la solucion
+            //la linea anterior se elimina pues el avance en permutacion es secuencial
+            //primero pos 0, luego pos 1, ...
             
             //deshacer esta linea
-            ArrayList<Movimiento> posicionesMano = posiblesPosiciones(matriz, fichaActual, solucion);//me retorna todas la posibles mano
-            
+            ArrayList<Movimiento> posicionesMano = posiblesPosiciones(matriz, permutacion.get(num), solucion);//me retorna todas la posibles mano
+            //¿que si no jay pos validas?
             //utilizo la funcion de Carlos
             for (int i = 0; i < posicionesMano.size(); i++) {
                 //asegurarme que permuta
                 solucion.add(posicionesMano.get(i));
-                jugar_aux(matriz, permutacion, solucion,arr);
+                jugar_aux(num+1, matriz, permutacion, solucion,arr);
                 solucion.remove(posicionesMano.get(i));
             }
-        }
-        return null;
+        } 
     }
     
     
