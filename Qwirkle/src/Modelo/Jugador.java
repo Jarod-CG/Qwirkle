@@ -201,19 +201,23 @@ public class Jugador {
         int puntos = 0;
         if(this.matrizFichas[fila][columna-1]!= null){
             int izquierda = validarFiguraHaciaLaIzquierda(fichaActual,fila,columna,subconjunto); // retorna los puntos y 0 (no hay fichas alrededor)
-            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila][columna+1]!= null){
             int derecha = validarFiguraHaciaLaDerecha(fichaActual,fila,columna,subconjunto);;
-            puntos += derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila-1][columna]!= null){
             int arriba = validarFiguraHaciaArriba(fichaActual,fila,columna,subconjunto);;
-            puntos += arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila+1][columna]!= null){
             int abajo = validarFiguraHaciaAbajo(fichaActual,fila,columna,subconjunto);;
-            puntos += abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo == 6 ? puntos + 6 : puntos + 0;
         }
         
         if(puntos>0){
@@ -228,19 +232,23 @@ public class Jugador {
         //boolean res = false;
         if(this.matrizFichas[fila][columna-1]!= null){
             int izquierda = validarColorHaciaLaIzquierda(fichaActual,fila,columna,subconjunto); // retorna los puntos y 0 (no hay fichas alrededor)
-            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila][columna+1]!= null){
             int derecha = validarColorHaciaLaDerecha(fichaActual,fila,columna,subconjunto);
-            puntos += derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila-1][columna]!= null){
             int arriba = validarColorHaciaArriba(fichaActual,fila,columna,subconjunto);
-            puntos += arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba == 6 ? puntos + 6 : puntos + 0;
         }
         if(this.matrizFichas[fila+1][columna]!= null){
             int abajo = validarColorHaciaAbajo(fichaActual,fila,columna,subconjunto);
-            puntos += abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo == 6 ? puntos + 6 : puntos + 0;
         }
         if(puntos > 0){
             return puntos;
@@ -262,7 +270,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarFiguraHaciaLaDerecha(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -277,7 +285,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarFiguraHaciaArriba(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -292,7 +300,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;    
+        return puntos+1;    
     }
     
     public int validarFiguraHaciaAbajo(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -307,7 +315,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarColorHaciaLaIzquierda(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -322,7 +330,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarColorHaciaLaDerecha(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -337,7 +345,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarColorHaciaArriba(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -352,7 +360,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public int validarColorHaciaAbajo(Ficha fichaActual,int fila, int columna, ArrayList<Ficha> subconjunto){
@@ -367,7 +375,7 @@ public class Jugador {
             }
             puntos++;
         }
-        return puntos;
+        return puntos+1;
     }
     
     public boolean estaEnLaSubconjunto(ArrayList<Ficha> subconjunto,Ficha ficha){
