@@ -15,19 +15,23 @@ public class Jugada {
     
     int puntajeTotal = 0;
     ArrayList<Movimiento> movimientos = new ArrayList<>();
-    Movimiento primerMovimiento = null;
-    boolean segundoMovimiento = false;
     OrientacionType orientacion = null;
-    DireccionType direccionSegundaFicha = null;
-    JugadaType tipoJugadaActual = null;
     
 
     public Jugada() {
         
     }
     
+    public Jugada(ArrayList<Movimiento> movimientos) {
+        this.movimientos = movimientos;
+        for (Movimiento movimiento : movimientos) {
+            this.sumarPuntos(movimiento.getPuntos());
+        }
+    }
+    
     public void add(Movimiento mov){
         this.getMovimientos().add(mov);
+        this.sumarPuntos(mov.getPuntos());
     }
     
     public void sumarPuntos(int puntos){
@@ -50,22 +54,6 @@ public class Jugada {
         this.movimientos = movimientos;
     }
 
-    public Movimiento getPrimerMovimiento() {
-        return primerMovimiento;
-    }
-
-    public void setPrimerMovimiento(Movimiento primerMovimiento) {
-        this.primerMovimiento = primerMovimiento;
-    }
-
-    public boolean isSegundoMovimiento() {
-        return segundoMovimiento;
-    }
-
-    public void setSegundoMovimiento(boolean segundoMovimiento) {
-        this.segundoMovimiento = segundoMovimiento;
-    }
-
     public OrientacionType getOrientacion() {
         return orientacion;
     }
@@ -73,24 +61,6 @@ public class Jugada {
     public void setOrientacion(OrientacionType orientacion) {
         this.orientacion = orientacion;
     }
-
-    public DireccionType getDireccionSegundaFicha() {
-        return direccionSegundaFicha;
-    }
-
-    public void setDireccionSegundaFicha(DireccionType direccionSegundaFicha) {
-        this.direccionSegundaFicha = direccionSegundaFicha;
-    }
-
-    public JugadaType getTipoJugadaActual() {
-        return tipoJugadaActual;
-    }
-
-    public void setTipoJugadaActual(JugadaType tipoJugadaActual) {
-        this.tipoJugadaActual = tipoJugadaActual;
-    }
-    
-    
     
     
     
