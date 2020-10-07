@@ -21,32 +21,54 @@ public class Juego {
     private ArrayList<Ficha> fichas;
     private JugadaType tipoJugadaActual;
     private Movimiento primerJugada;
+    
+    private int turno;
 
-    public Juego(int numSim, int numAva, int numHum) {
+
+    public Juego(int numSim, int numAva, int numHum, int n) {
+        this.turno = 0;
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
         if (numHum == 1) {
             //crea un jugador humano
-            jugadores.add(new Jugador());
+            jugadores.add(new MiJugador());
         }
         for (int i = 0; i < numSim; i++) {
-            //aca creo numSim cantidad de algoritmos simples
+            jugadores.add(new Jugador());
             
         }
         for (int i = 0; i < numAva; i++) {
-            //aca creo numAva cantidad de algoritmos avanzados
+            jugadores.add(new Jugador());
             
         }
         //crear la matriz tablero
-        this.matrizFichas = new Ficha[9][17];//el tamaño variaria
+        this.matrizFichas = new Ficha[n][n];//el tamaño variaria
         //asignar las fichas
-        this.fichas = new ArrayList();
-        for (int i = 0; i < 3; i++) {
-            for (FichaType ficha : FichaType.values()) {
-
-                fichas.add(new Ficha(ficha));
-            }
+        crearFichas();
+        repartirFichas();
+        cargarManos();
+        setInicio();
+        
+    }
+    
+    
+    private void setInicio(){
+        float f  = (matrizFichas.length/2);
+        int x = Math.round(f);
+        System.out.println(x);
+        System.out.println(matrizFichas.length);
+        matrizFichas[x][x] = jugadores.get(0).getMano()[0];
+        jugadores.get(0).getMano()[0] = null;
+        jugadores.get(0).actualizarMano();
+    }
+    
+    private void cargarManos(){
+        for (Jugador jugador : jugadores) {
+            jugador.actualizarMano();
         }
+    }
+    
+    private void repartirFichas(){
         Collections.shuffle(fichas);//revuelve las fichas
         int contador=1;
         int x = fichas.size()/jugadores.size();
@@ -54,15 +76,49 @@ public class Juego {
             for (int j = 0;j <x ;j++){
                 jugadores.get(i).addFichas(fichas.get(j+(x*(contador-1))));
             } 
+            
             contador++;
         }
     }
+    
+    private void crearFichas(){
+        this.fichas = new ArrayList();
+        for (int i = 0; i < 3; i++) {
+            for (FichaType ficha : FichaType.values()) {
+
+                fichas.add(new Ficha(ficha));
+            }
+        }
+    }
+    
 
     public Juego(Ficha[][] MatrizFichas, ArrayList<Jugador> jugadores, Ficha fichaActual, ArrayList<Ficha> fichas) {
         this.matrizFichas = MatrizFichas;
         this.jugadores = jugadores;
         this.fichaActual = fichaActual;
         this.fichas = fichas;
+    }
+    
+    
+    public void jugar () {
+        Jugador jugador = jugadores.get(turno++%jugadores.size());
+        
+        
+        //aqui llamar al backtracking
+        Jugada jugada = jugador.getMejorJugada();
+        jugador.sumarPuntaje(jugada.puntajeTotal);
+        
+        aplicarJugada (jugada);
+        
+        
+        
+    }
+    
+    public void aplicarJugada(Jugada jugada) {
+        for (int i = 0; i < jugada.getMovimientos().size(); i++) {
+            Movimiento movimiento = jugada.getMovimientos().get(i);
+            matrizFichas[movimiento.getFila()][movimiento.getColumna()] = movimiento.getFicha();
+        }
     }
     
     
