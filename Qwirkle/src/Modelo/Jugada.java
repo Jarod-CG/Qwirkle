@@ -5,43 +5,63 @@
  */
 package Modelo;
 
+import java.util.ArrayList;
+
 /**
  *
- * @author Jarod
+ * @author Carlos
  */
 public class Jugada {
-    private int[] par;
-    private int puntos;
+    
+    int puntajeTotal = 0;
+    ArrayList<Movimiento> movimientos = new ArrayList<>();
+    OrientacionType orientacion = null;
+    
 
     public Jugada() {
-        this.par = new int[2];
-        this.puntos = 0;
-    }
-
-    public int[] getPar() {
-        return par;
-    }
-
-    public void setPar(int[] par) {
-        this.par = par;
+        
     }
     
-    public void setPar(int x, int y) {
-        this.par[0] = x;
-        this.par[1] = y;
+    public Jugada(ArrayList<Movimiento> movimientos) {
+        this.movimientos = movimientos;
+        for (Movimiento movimiento : movimientos) {
+            this.sumarPuntos(movimiento.getPuntos());
+        }
     }
     
-    public int getPuntos() {
-        return puntos;
+    public void add(Movimiento mov){
+        this.getMovimientos().add(mov);
+        this.sumarPuntos(mov.getPuntos());
+    }
+    
+    public void sumarPuntos(int puntos){
+        this.puntajeTotal+= puntos;
     }
 
-    public void setPuntos(int puntos) {
-        this.puntos = puntos;
+    public int getPuntajeTotal() {
+        return puntajeTotal;
+    }
+
+    public void setPuntajeTotal(int puntajeTotal) {
+        this.puntajeTotal = puntajeTotal;
+    }
+
+    public ArrayList<Movimiento> getMovimientos() {
+        return movimientos;
+    }
+
+    public void setMovimientos(ArrayList<Movimiento> movimientos) {
+        this.movimientos = movimientos;
+    }
+
+    public OrientacionType getOrientacion() {
+        return orientacion;
+    }
+
+    public void setOrientacion(OrientacionType orientacion) {
+        this.orientacion = orientacion;
     }
     
-    public void incPuntos(int mas){
-        this.puntos+=mas;
-    }
     
     
 }

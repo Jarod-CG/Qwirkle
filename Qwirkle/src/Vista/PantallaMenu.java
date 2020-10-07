@@ -41,6 +41,9 @@ public class PantallaMenu extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        lblTotal = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        txtTamano = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,6 +85,10 @@ public class PantallaMenu extends javax.swing.JFrame {
 
         jLabel6.setText("Jugadores");
 
+        lblTotal.setText("3");
+
+        jLabel1.setText("Tamaño ( n x n ): ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,17 +104,12 @@ public class PantallaMenu extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(55, 55, 55)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnPlayMin)
-                                .addGap(42, 42, 42)
-                                .addComponent(lblPla, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(42, 42, 42)
-                                .addComponent(btnPlaMax))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnAlgAvaMin)
                                 .addGap(42, 42, 42)
@@ -115,17 +117,31 @@ public class PantallaMenu extends javax.swing.JFrame {
                                 .addGap(42, 42, 42)
                                 .addComponent(btnAlgAvaMax))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAlgSimMin)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnAlgSimMin)
+                                        .addGap(42, 42, 42)
+                                        .addComponent(lblAlgSim, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(42, 42, 42)
-                                .addComponent(lblAlgSim, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnAlgSimMax))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtTamano, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnPlayMin)
+                                        .addGap(42, 42, 42)
+                                        .addComponent(lblPla, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(42, 42, 42)
-                                .addComponent(btnAlgSimMax)))))
+                                .addComponent(btnPlaMax)))))
                 .addGap(269, 269, 269))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(77, 77, 77)
+                .addGap(36, 36, 36)
+                .addComponent(lblTotal)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblAlgSim)
                     .addComponent(btnAlgSimMin)
@@ -148,9 +164,13 @@ public class PantallaMenu extends javax.swing.JFrame {
                     .addComponent(btnPlayMin)
                     .addComponent(btnPlaMax)
                     .addComponent(jLabel6))
-                .addGap(63, 63, 63)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtTamano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
                 .addComponent(btnJugar)
-                .addGap(74, 74, 74)
+                .addGap(44, 44, 44)
                 .addComponent(btnSalir)
                 .addContainerGap(109, Short.MAX_VALUE))
         );
@@ -210,11 +230,14 @@ public class PantallaMenu extends javax.swing.JFrame {
     public javax.swing.JButton btnPlaMax;
     public javax.swing.JButton btnPlayMin;
     public javax.swing.JButton btnSalir;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     public javax.swing.JLabel lblAlgAva;
     public javax.swing.JLabel lblAlgSim;
     public javax.swing.JLabel lblPla;
+    public javax.swing.JLabel lblTotal;
+    public javax.swing.JTextField txtTamano;
     // End of variables declaration//GEN-END:variables
 }
