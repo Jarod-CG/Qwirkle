@@ -241,7 +241,6 @@ public class Jugador {
 
     public ArrayList<Movimiento> getListaPrimerosMovimientos(Ficha ficha, ArrayList<Ficha> subconjunto) {
         ArrayList<Movimiento> primerosMovimientos = new ArrayList();
-        System.out.println(matrizFichas.length);
         for (int fila = 0; fila < this.matrizFichas.length; fila++) {
             for (int columna = 0; columna < this.matrizFichas.length; columna++) {
                 if (this.matrizFichas[fila][columna] == null) {
@@ -668,12 +667,13 @@ public class Jugador {
             //permuto cada combinacion
             ArrayList<ArrayList<Ficha>> permutacionesDe = new ArrayList();
             permutarFichas(combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
+            
             //ahora recorro cada una de las permutaciones
             for (int j = 0; j < permutacionesDe.size(); j++) {
-                if (permutacionesDe.get(i) != null) {
+                if (permutacionesDe.get(j) != null) {
                     //revisar porque entra null
 
-                    jugadas.addAll(getListaJugadas(permutacionesDe.get(i)));
+                    jugadas.addAll(getListaJugadas(permutacionesDe.get(j)));
 
                 }
 
