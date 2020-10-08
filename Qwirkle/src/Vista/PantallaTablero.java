@@ -20,6 +20,7 @@ public class PantallaTablero extends javax.swing.JFrame {
      * Creates new form PantallaTablero
      */
     public PantallaTablero() {
+
         
         initComponents();
         
@@ -35,12 +36,14 @@ public class PantallaTablero extends javax.swing.JFrame {
             for (int j = 0; j < n; j++) {
                 butArray[i][j] = new JButton();
                 butArray[i][j].setBackground(new Color(255,255,255));
+
                 butArray[i][j].setPreferredSize(new Dimension(45,45));
                 //butArray[i][j].setFont(new Font("Arial", Font.PLAIN, 7));
                 pnlFichas.add(butArray[i][j]);
             }
             
         }
+
         pnlFichasJugadores.setLayout(new GridLayout(y, x,3,6));
         for (int i = 0; i < y; i++) {
             for (int j = 0; j < x; j++) {
@@ -51,6 +54,7 @@ public class PantallaTablero extends javax.swing.JFrame {
                 pnlFichasJugadores.add(fichasJugadores[i][j]);
             }
         }
+
         
         
     }
@@ -193,6 +197,7 @@ public class PantallaTablero extends javax.swing.JFrame {
         });
     }
 
+
     public void setN(int n) {
         this.n = n;
     }
@@ -203,6 +208,7 @@ public class PantallaTablero extends javax.swing.JFrame {
     
     public int n;
     public JButton[][] fichasJugadores;
+
     public JButton[][] butArray;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnSalir;

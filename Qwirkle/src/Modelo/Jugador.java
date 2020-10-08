@@ -15,9 +15,9 @@ import java.util.Collections;
  */
 public class Jugador {
 
-    private double puntaje;
-    private ArrayList<Ficha> fichas;
-    private Ficha[] mano;
+    protected double puntaje;
+    protected ArrayList<Ficha> fichas;
+    protected Ficha[] mano;
 
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
@@ -28,10 +28,11 @@ public class Jugador {
     private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
 
-    public Jugador() {
+    public Jugador(Ficha[][] matrizFichas) {
         this.puntaje = 0;
         this.fichas = new ArrayList();
         this.mano = new Ficha[6];
+        this.matrizFichas = matrizFichas;
     }
 
     public void sumarPuntaje(int num) {
@@ -78,6 +79,142 @@ public class Jugador {
         this.fichas = fichas;
     }
 
+    //retorna true si cumple figura
+    private boolean jugadaDeFigura(Ficha[][] matrizFichas, Ficha ficha, int[] par) {
+        //par = [x,y]
+        //primero por fila
+        //largo de filas
+        //retrocede
+        boolean is = true;
+        for (int i = par[0]; i > 0; i--) {
+            //asumiendo que en los espacios donde no hay ficha hay un null
+            if (matrizFichas[par[1]][i].equals(null)) {
+                break;
+            }
+            //valida que si hay ficha, si la hay y no coincide el tipo, break
+            if (!matrizFichas[par[1]][i].getFigura().equals(ficha.getFigura())) {
+                is = false;
+                break;
+            }
+        }
+        if (is) {
+            //largo de la fila
+            //avanza
+            for (int i = par[0]; i < matrizFichas[par[1]].length; i++) {
+                if (matrizFichas[par[1]][i].equals(null)) {
+                    break;
+                }
+                if (!matrizFichas[par[1]][i].getFigura().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        if (is) {
+            //recorre la columna de y hasta 0
+            for (int i = par[1]; i > 0; i--) {
+                if (matrizFichas[i][par[0]].equals(null)) {
+                    break;
+                }
+                if (!matrizFichas[i][par[0]].getFigura().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        if (is) {
+
+            //avanza en columna desde y hasta el final
+            for (int i = par[1]; i < matrizFichas.length; i++) {
+                if (matrizFichas[i][par[0]].equals(null)) {
+                    break;
+                }
+                if (!matrizFichas[i][par[0]].getFigura().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        return is;
+    }
+
+    //retorna true si cumple figura
+    private boolean jugadaDeColor(Ficha[][] matrizFichas, Ficha ficha, int[] par) {
+        //par = [x,y]
+        //primero por fila
+        //largo de filas
+        //retrocede
+        boolean is = true;
+        for (int i = par[0]; i > 0; i--) {
+            //asumiendo que en los espacios donde no hay ficha hay un null
+            if (matrizFichas[par[1]][i] == null) {
+                break;
+            }
+            //valida que si hay ficha, si la hay y no coincide el tipo, break
+            if (!matrizFichas[par[1]][i].getColor().equals(ficha.getFigura())) {
+                is = false;
+                break;
+            }
+        }
+        if (is) {
+            //largo de la fila
+            //avanza
+            for (int i = par[0]; i < matrizFichas[par[1]].length; i++) {
+                if (matrizFichas[par[1]][i] == null) {
+                    break;
+                }
+                if (!matrizFichas[par[1]][i].getColor().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        if (is) {
+            //recorre la columna de y hasta 0
+            for (int i = par[1]; i > 0; i--) {
+                if (matrizFichas[i][par[0]] == null) {
+                    break;
+                }
+                if (!matrizFichas[i][par[0]].getColor().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        if (is) {
+
+            //avanza en columna desde y hasta el final
+            for (int i = par[1]; i < matrizFichas.length; i++) {
+                if (matrizFichas[i][par[0]] == null) {
+                    break;
+                }
+                if (!matrizFichas[i][par[0]].getColor().equals(ficha.getFigura())) {
+                    is = false;
+                    break;
+                }
+            }
+        }
+        return is;
+    }
+
+    public boolean jugadaValida(Ficha[][] matrizFichas, Ficha ficha, int[] par) {
+        return jugadaDeColor(matrizFichas, ficha, par) && jugadaDeFigura(matrizFichas, ficha, par);
+    }
+
+    //entra a esta funcion cuando se sepa que la jugada es valida
+    //true, mismo color
+    //false, misma figura
+    public boolean determinarTipoJugada(Ficha ficha1, Ficha ficha2) {
+        return ficha1.getColor().equals(ficha2.getColor());
+    }
+
+    //entra a esta funcion cuando se sepa que la jugada es valida
+    //true, x, misma fila
+    //false, y, misma columna
+    public boolean determinarOrientacion(int[] par1, int[] par2) {
+        return par1[0] == par2[0];
+    }
+
     public JugadaType getTipoJugadaActual() {
         return tipoJugadaActual;
     }
@@ -103,7 +240,10 @@ public class Jugador {
     }
 
     public ArrayList<Movimiento> getListaPrimerosMovimientos(Ficha ficha, ArrayList<Ficha> subconjunto) {
-        ArrayList<Movimiento> primerosMovimientos = new ArrayList<>();
+
+        ArrayList<Movimiento> primerosMovimientos = new ArrayList();
+        //System.out.println(matrizFichas.length);
+
         for (int fila = 0; fila < this.matrizFichas.length; fila++) {
             for (int columna = 0; columna < this.matrizFichas.length; columna++) {
                 if (this.matrizFichas[fila][columna] == null) {
@@ -145,15 +285,25 @@ public class Jugador {
 
     public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<ArrayList<Movimiento>> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
+            System.out.println("======solucion======");
+            for (Movimiento movimiento : solucion) {
+                System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                        + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+            }
+            System.out.println("====================================");
+
             arr.add(solucion);
         } else {
             ArrayList<Movimiento> movimientos = getMovimientosValidos(perm.get(num), ori, perm, primerMov);
-            for (int i = 0; i < movimientos.size(); i++) {
-                solucion.add(movimientos.get(i));
-                this.matrizFichas[movimientos.get(i).getFila()][movimientos.get(i).getColumna()] = movimientos.get(i).getFicha();
-                backtrackingJugadas(num + 1, perm, solucion, arr, primerMov, ori);
-                this.matrizFichas[movimientos.get(i).getFila()][movimientos.get(i).getColumna()] = null;
-                solucion.remove(movimientos.get(i));
+            for (Movimiento movimiento : movimientos) {
+
+                solucion.add(movimiento);
+                this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = movimiento.getFicha();
+                num += 1;
+                backtrackingJugadas(num, perm, solucion, arr, primerMov, ori);
+                num -= 1;
+                this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = null;
+                solucion.remove(movimiento);
             }
         }
     }
@@ -185,8 +335,10 @@ public class Jugador {
                     ArrayList<Movimiento> solucion = new ArrayList<Movimiento>();
                     solucion.add(primerMovimiento);
                     backtrackingJugadas(1, subconjunto, solucion, arr, primerMovimiento, orientacion);
+
                 }
             }
+            System.out.println("tam arr : " + arr.size());
             for (ArrayList<Movimiento> movimientos : arr) {
                 jugadas = convertMoviAJugada(movimientos);
             }
@@ -207,20 +359,26 @@ public class Jugador {
 
     public int calcularPuntos(Ficha ficha, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
-        if (validarFigura(ficha, fila, columna, subconjunto) > 0) {
-            puntos += validarFigura(ficha, fila, columna, subconjunto);
-        }
-        if (validarColor(ficha, fila, columna, subconjunto) > 0) {
-            puntos += validarColor(ficha, fila, columna, subconjunto);
-        }
-        if (puntos > 0) {
-            return puntos;
+
+        //System.out.println("F: "+fila+" / C:"+columna);
+        if (fila > 0 && columna > 0 && fila < this.matrizFichas.length - 1 && columna < this.matrizFichas.length - 1) {
+            if (validarFigura(ficha, fila, columna, subconjunto) > 0) {
+                puntos += validarFigura(ficha, fila, columna, subconjunto);
+            }
+            if (validarColor(ficha, fila, columna, subconjunto) > 0) {
+                puntos += validarColor(ficha, fila, columna, subconjunto);
+            }
+            if (puntos > 0) {
+                return puntos;
+            }
+
         }
         return 0;
     }
 
     public int validarFigura(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) { //determina si la figura calza en la posición
         int puntos = 0;
+
         if (this.matrizFichas[fila][columna - 1] != null) {
             int izquierda = validarFiguraHaciaLaIzquierda(fichaActual, fila, columna, subconjunto); // retorna los puntos y 0 (no hay fichas alrededor)
             puntos += izquierda >= 0 ? puntos + izquierda : puntos - 1000;
@@ -447,20 +605,27 @@ public class Jugador {
     private ArrayList<ArrayList<Ficha>> combinaciones(Ficha[] mano) {
         ArrayList<ArrayList<Ficha>> lista = new ArrayList();
         partesDe(lista, new ArrayList(), mano, 0);
+
+        System.out.println("sub de mano : " + lista.size());
+
+        /*
+        por algpun motivo lista despues de pasat por parteDe
+        queda con una lista null al inicio
+         */
         ArrayList<ArrayList<Ficha>> remover = new ArrayList();
         //validar que compartand una propiedad
         //recorre cada subconjunto
         for (int i = 0; i < lista.size(); i++) {
             //recorre el subconjunto
             ArrayList<Ficha> sub = lista.get(i);
-            if (sub.size() > 1) {//todos los de tamaño 1 son validos
-                for (int j = 1; j < sub.size(); j++) {
-                    if ((!sub.get(j - 1).getColor().equals(sub.get(j).getColor()))
-                            | (!sub.get(j - 1).getFigura().equals(sub.get(j).getFigura()))) {
-                        //si entra es porque el subconjunto no cumple con color o figura
-                        remover.add(sub);
-                        break;
-                    }
+
+            for (int j = 1; j < sub.size(); j++) {
+                if ((!sub.get(j - 1).getColor().equals(sub.get(j).getColor()))
+                        & (!sub.get(j - 1).getFigura().equals(sub.get(j).getFigura()))) {
+                    //si entra es porque el subconjunto no cumple con color o figura
+                    remover.add(sub);
+                    break;
+
                 }
             }
 
@@ -469,6 +634,13 @@ public class Jugador {
             lista.remove(remover.get(i));
         }
         //retorna todas
+
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).size() == 0) {
+                lista.remove(lista.get(i));
+            }
+        }
+
         return lista;
 
     }
@@ -487,12 +659,15 @@ public class Jugador {
     public Jugada getMejorJugada() {
         Jugada mayor = null;
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
-        mayor = jugadas.get(0);
-        for (int i = 1; i < jugadas.size(); i++) {
-            if (mayor.getPuntajeTotal() < jugadas.get(i).getPuntajeTotal()) {
-                mayor = jugadas.get(i);
+        if (jugadas.size() > 0) {
+            mayor = jugadas.get(0);
+            for (int i = 1; i < jugadas.size(); i++) {
+                if (mayor.getPuntajeTotal() < jugadas.get(i).getPuntajeTotal()) {
+                    mayor = jugadas.get(i);
+                }
             }
         }
+
         return mayor;
     }
 
@@ -501,19 +676,41 @@ public class Jugador {
         ArrayList<Jugada> jugadas = new ArrayList();
         //obtengo todos los subconjuntos de posibles de la mano
         ArrayList<ArrayList<Ficha>> combinaciones = combinaciones(mano);
+
+        //System.out.println("Tam com : " + combinaciones.size());
+        //la mano llega bien
         for (int i = 0; i < combinaciones.size(); i++) {
+
             //permuto cada combinacion
             ArrayList<ArrayList<Ficha>> permutacionesDe = new ArrayList();
             permutarFichas(combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
             //ahora recorro cada una de las permutaciones
+
+            //System.out.println("Tamano permutaciones: " + permutacionesDe.size());
             for (int j = 0; j < permutacionesDe.size(); j++) {
-                if (permutacionesDe.get(i) != null) {
-                    //revisar porque entra null
-                    jugadas.addAll(getListaJugadas(permutacionesDe.get(i)));
-                    
+                /*
+                System.out.println("Tam per indi : " +permutacionesDe.get(j).size() );
+                for (int k = 0; k < permutacionesDe.get(j).size(); k++) {
+                    System.out.println(permutacionesDe.get(j).get(k).getTipo());
                 }
-                System.out.println(permutacionesDe);
+                System.out.println("");
+                 */
+                if (permutacionesDe.get(j) != null) {
+                    //revisar porque entra null
+                    ArrayList<Jugada> jug = getListaJugadas(permutacionesDe.get(j));
+                    jugadas.addAll(jug);
+                    /*
+                    for (Jugada jugada : jug) {
+                        for (Movimiento movimiento : jugada.getMovimientos()) {
+                            System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                                    + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+                        }
+                        System.out.println("");
+                    }
+                     */
+                }
             }
+
         }
         return jugadas;
     }
