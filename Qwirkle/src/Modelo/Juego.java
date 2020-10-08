@@ -33,7 +33,7 @@ public class Juego {
         this.matrizFichas = new Ficha[n][n];//el tamaño variaria
         if (numHum == 1) {
             //crea un jugador humano
-            jugadores.add(new MiJugador());
+            jugadores.add(new Jugador(matrizFichas));
         }
         for (int i = 0; i < numSim; i++) {
 

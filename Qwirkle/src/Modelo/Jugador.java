@@ -348,14 +348,17 @@ public class Jugador {
 
     public int calcularPuntos(Ficha ficha, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
-        if (validarFigura(ficha, fila, columna, subconjunto) > 0) {
-            puntos += validarFigura(ficha, fila, columna, subconjunto);
-        }
-        if (validarColor(ficha, fila, columna, subconjunto) > 0) {
-            puntos += validarColor(ficha, fila, columna, subconjunto);
-        }
-        if (puntos > 0) {
-            return puntos;
+        //System.out.println("F: "+fila+" / C:"+columna);
+        if (fila > 0 && columna > 0 && fila < this.matrizFichas.length-1 && columna < this.matrizFichas.length-1) {
+            if (validarFigura(ficha, fila, columna, subconjunto) > 0) {
+                puntos += validarFigura(ficha, fila, columna, subconjunto);
+            }
+            if (validarColor(ficha, fila, columna, subconjunto) > 0) {
+                puntos += validarColor(ficha, fila, columna, subconjunto);
+            }
+            if (puntos > 0) {
+                return puntos;
+            }
         }
         return 0;
     }
@@ -669,14 +672,14 @@ public class Jugador {
             ArrayList<ArrayList<Ficha>> permutacionesDe = new ArrayList();
             permutarFichas(combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
             //ahora recorro cada una de las permutaciones
+            System.out.println("Tamano permutaciones: "+permutacionesDe.size());
             for (int j = 0; j < permutacionesDe.size(); j++) {
-                if (permutacionesDe.get(i) != null) {
+                System.out.println("index : "+ j);
+                if (permutacionesDe.get(j) != null) {
                     //revisar porque entra null
-
-                    jugadas.addAll(getListaJugadas(permutacionesDe.get(i)));
-
+                    
+                    jugadas.addAll(getListaJugadas(permutacionesDe.get(j)));
                 }
-
             }
 
         }

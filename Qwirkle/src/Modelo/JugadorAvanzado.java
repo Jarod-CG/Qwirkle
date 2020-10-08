@@ -9,6 +9,6 @@ package Modelo;
  *
  * @author Jarod
  */
-public class JugadorAvanzado extends Jugador {
+public class JugadorAvanzado {
     
 }
