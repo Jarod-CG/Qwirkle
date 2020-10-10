@@ -711,9 +711,11 @@ public class Jugador {
     public Jugada getMejorJugada() {
         Jugada mayor = null;
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
+        System.out.println("tamaño de todas las jugadas " + jugadas.size());
         if (jugadas.size() > 0) {
             mayor = jugadas.get(0);
             for (int i = 1; i < jugadas.size(); i++) {
+                System.out.println("puntaje de " + i + "jugada : " +  jugadas.get(i).getPuntajeTotal()) ;
                 if (mayor.getPuntajeTotal() < jugadas.get(i).getPuntajeTotal()) {
                     mayor = jugadas.get(i);
                 }
