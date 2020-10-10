@@ -614,13 +614,11 @@ public class Jugador {
         ArrayList<ArrayList<Ficha>> lista = new ArrayList();
         partesDe(lista, new ArrayList(), mano, 0);
 
-<<<<<<< HEAD
+
         int queEs = 0;//0 indef, 1 es color, 2 es figura
 
         System.out.println("sub de mano : " + lista.size());
-=======
-        //System.out.println("sub de mano : " + lista.size());
->>>>>>> ca0b9df5b206ed55b551bb16bae13db08aab3811
+
 
         /*
         por algpun motivo lista despues de pasat por parteDe
