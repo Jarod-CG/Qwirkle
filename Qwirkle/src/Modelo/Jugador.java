@@ -606,6 +606,8 @@ public class Jugador {
         ArrayList<ArrayList<Ficha>> lista = new ArrayList();
         partesDe(lista, new ArrayList(), mano, 0);
 
+        int queEs = 0;//0 indef, 1 es color, 2 es figura
+
         System.out.println("sub de mano : " + lista.size());
 
         /*
@@ -620,13 +622,33 @@ public class Jugador {
             ArrayList<Ficha> sub = lista.get(i);
 
             for (int j = 1; j < sub.size(); j++) {
+                
+                /*
                 if ((!sub.get(j - 1).getColor().equals(sub.get(j).getColor()))
                         & (!sub.get(j - 1).getFigura().equals(sub.get(j).getFigura()))) {
                     //si entra es porque el subconjunto no cumple con color o figura
                     remover.add(sub);
-                    break;
-
+                    break;//es para el for anidado
                 }
+                */
+                
+                if (sub.get(j - 1).getColor().equals(sub.get(j).getColor())) {
+                    if (!coincideColor(sub)){
+                       remover.add(sub);
+                        break; 
+                    }
+                }
+                else if (sub.get(j - 1).getFigura().equals(sub.get(j).getFigura())) {
+                    if (!coincideFigura(sub)){
+                       remover.add(sub);
+                        break; 
+                    }
+                }
+                else {
+                    remover.add(sub);
+                    break;
+                }
+
             }
 
         }
@@ -644,6 +666,26 @@ public class Jugador {
         return lista;
 
     }
+    
+    private boolean coincideColor(ArrayList<Ficha> sub) {
+        
+        for (int i = 1; i < sub.size(); i++) {
+            if(!sub.get(i - 1).getColor().equals(sub.get(i).getColor())){
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean coincideFigura(ArrayList<Ficha> sub) {
+        
+        for (int i = 1; i < sub.size(); i++) {
+            if(!sub.get(i - 1).getFigura().equals(sub.get(i).getFigura())){
+                return false;
+            }
+        }
+        return true;
+    }
+    
 
     //https://java2blog.com/find-subsets-set-power-set/
     //retorna todos los subconjuntos
@@ -714,4 +756,6 @@ public class Jugador {
         }
         return jugadas;
     }
+
+    
 }

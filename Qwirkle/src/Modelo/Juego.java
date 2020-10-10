@@ -117,7 +117,7 @@ public class Juego {
     }
 
     public void aplicarJugada(Jugada jugada) {
-        System.out.println("size movimienteos : " + jugada.getMovimientos().size());
+        //System.out.println("size movimienteos : " + jugada.getMovimientos().size());
         for (int i = 0; i < jugada.getMovimientos().size(); i++) {
 
             Movimiento movimiento = jugada.getMovimientos().get(i);
