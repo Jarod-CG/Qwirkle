@@ -296,12 +296,11 @@ public class Jugador {
         } else {
             ArrayList<Movimiento> movimientos = getMovimientosValidos(perm.get(num), ori, perm, primerMov);
             for (Movimiento movimiento : movimientos) {
-
                 solucion.add(movimiento);
                 this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = movimiento.getFicha();
-                num += 1;
-                backtrackingJugadas(num, perm, solucion, arr, primerMov, ori);
-                num -= 1;
+                //num += 1;
+                backtrackingJugadas(num+1, perm, solucion, arr, primerMov, ori);
+                //num -= 1;
                 this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = null;
                 solucion.remove(movimiento);
             }
@@ -326,7 +325,6 @@ public class Jugador {
 
     public ArrayList<Jugada> getListaJugadas(ArrayList<Ficha> subconjunto) { //AQUI LAS PERMUTACIONES DE LA MANO 
         ArrayList<Jugada> jugadas = new ArrayList<>();
-
         ArrayList<Movimiento> primerosMovimientos = getListaPrimerosMovimientos(subconjunto.get(0), subconjunto);
         if (subconjunto.size() > 1) {
             ArrayList<ArrayList<Movimiento>> arr = new ArrayList<ArrayList<Movimiento>>();
@@ -338,12 +336,22 @@ public class Jugador {
 
                 }
             }
-            System.out.println("tam arr : " + arr.size());
-            for (ArrayList<Movimiento> movimientos : arr) {
+            //System.out.println("tam arr : " + arr.size());
+            /*for (ArrayList<Movimiento> movimientos : arr) {
                 jugadas = convertMoviAJugada(movimientos);
+            }*/
+            
+            for (ArrayList<Movimiento> arrMovimientos : arr) {
+                    jugadas.add(new Jugada(arrMovimientos));
             }
+            
         } else {
-            jugadas = convertMoviAJugada(primerosMovimientos);
+            for (Movimiento movimiento : primerosMovimientos) {
+                ArrayList<Movimiento> movimientos = new ArrayList<>();
+                movimientos.add(movimiento);
+                jugadas.add(new Jugada(movimientos));
+            }
+            //jugadas = convertMoviAJugada(primerosMovimientos);
         }
         return jugadas;
 
@@ -437,7 +445,7 @@ public class Jugador {
                 //return false;
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
                 return 1;
             }
             puntos++;
@@ -452,7 +460,7 @@ public class Jugador {
                     || matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
                 return 1;
             }
             puntos++;
@@ -467,7 +475,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 return 1;
             }
             puntos++;
@@ -482,7 +490,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 return 1;
             }
             puntos++;
@@ -497,7 +505,7 @@ public class Jugador {
                     || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
                 return 1;
             }
             puntos++;
@@ -512,7 +520,7 @@ public class Jugador {
                     || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
                 return 1;
             }
             puntos++;
@@ -527,7 +535,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 return 1;
             }
             puntos++;
@@ -542,7 +550,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, fichaActual) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 return 1;
             }
             puntos++;
@@ -606,9 +614,13 @@ public class Jugador {
         ArrayList<ArrayList<Ficha>> lista = new ArrayList();
         partesDe(lista, new ArrayList(), mano, 0);
 
+<<<<<<< HEAD
         int queEs = 0;//0 indef, 1 es color, 2 es figura
 
         System.out.println("sub de mano : " + lista.size());
+=======
+        //System.out.println("sub de mano : " + lista.size());
+>>>>>>> ca0b9df5b206ed55b551bb16bae13db08aab3811
 
         /*
         por algpun motivo lista despues de pasat por parteDe
