@@ -110,6 +110,8 @@ public class Juego {
 
             aplicarJugada(jugada);
             //elimanr fichas de la mano
+            jugador.eliminarFichas (jugada.getMovimientos());
+            jugador.actualizarMano();
 
         }
         //si es null significa que no encontro una solucion valida

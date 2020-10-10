@@ -84,6 +84,19 @@ public class ControladorTablero implements ActionListener {
     
     private void update(){
         setImagenes();
+        puntajes();
+    }
+    
+    private void puntajes(){
+        String str = "<html>";
+        for (int i = 0; i < juego.getJugadores().size(); i++) {
+            str += "Jugador " + Integer.toString(i+1) + " : " + Float.toString((float) juego.getJugadores().get(i).getPuntaje());
+            str += "<br/>";
+            
+        }
+        str += "<html/>";
+        
+        pantallaTablero.lblTurno.setText(str);
     }
 
     private void setImagenes() {

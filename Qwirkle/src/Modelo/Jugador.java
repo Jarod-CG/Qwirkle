@@ -769,5 +769,17 @@ public class Jugador {
         return jugadas;
     }
 
+    public void eliminarFichas(ArrayList<Movimiento> movimientos) {
+        for (int i = 0; i < mano.length; i++) {
+            for (int j = 0; j < movimientos.size(); j++) {
+                if (movimientos.get(j).getFicha().equals(mano[i])) {
+                    mano[i]=null;
+                    break;
+                }
+            }
+            
+        }
+    }
+
     
 }
