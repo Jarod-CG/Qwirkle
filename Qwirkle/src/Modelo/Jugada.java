@@ -13,9 +13,9 @@ import java.util.ArrayList;
  */
 public class Jugada {
     
-    int puntajeTotal = 0;
+    int puntajeTotal;
     ArrayList<Movimiento> movimientos = new ArrayList<>();
-    OrientacionType orientacion = null;
+    OrientacionType orientacion;
     
 
     public Jugada() {
@@ -23,9 +23,12 @@ public class Jugada {
     }
     
     public Jugada(ArrayList<Movimiento> movimientos) {
+        this.puntajeTotal = 0;
+        //this.movimientos = new ArrayList<>();
         this.movimientos = movimientos;
+        this.orientacion = null;
         for (Movimiento movimiento : movimientos) {
-            this.sumarPuntos(movimiento.getPuntos());
+            this.puntajeTotal += movimiento.getPuntos();
         }
     }
     
@@ -35,7 +38,7 @@ public class Jugada {
     }
     
     public void sumarPuntos(int puntos){
-        this.puntajeTotal+= puntos;
+        this.puntajeTotal= this.puntajeTotal + puntos;
     }
 
     public int getPuntajeTotal() {

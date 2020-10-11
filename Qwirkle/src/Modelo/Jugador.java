@@ -240,10 +240,8 @@ public class Jugador {
     }
 
     public ArrayList<Movimiento> getListaPrimerosMovimientos(Ficha ficha, ArrayList<Ficha> subconjunto) {
-
         ArrayList<Movimiento> primerosMovimientos = new ArrayList();
         //System.out.println(matrizFichas.length);
-
         for (int fila = 0; fila < this.matrizFichas.length; fila++) {
             for (int columna = 0; columna < this.matrizFichas.length; columna++) {
                 if (this.matrizFichas[fila][columna] == null) {
@@ -257,52 +255,28 @@ public class Jugador {
         return primerosMovimientos;
     }
 
-    public ArrayList<Movimiento> backTrackingMovimientos(ArrayList<Ficha> sub, OrientacionType ori, int fil, int col, ArrayList<Movimiento> movimientos) {
-        if (sub.size() == movimientos.size()) {
-            return movimientos;
-        } else {
-            for (Ficha ficha : sub) {
-                for (int j = 0; j < this.matrizFichas.length; j++) {
-                    if (ori == OrientacionType.COLUMNA) {
-                        int puntos = calcularPuntos(ficha, fil, col, sub);
-                        if (puntos > 0) {
-                            this.matrizFichas[j][col] = ficha;
-                            Movimiento mov = new Movimiento(fil, col, puntos, ficha);
-                            movimientos.add(mov);
-                            backTrackingMovimientos(sub, ori, fil + 1, col, movimientos);// AQUI EL BACKTRACKING
-                            this.matrizFichas[j][col] = null;
-                            movimientos.remove(mov);
-                        }
-
-                    } else {
-
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<ArrayList<Movimiento>> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
-            System.out.println("======solucion======");
+            /*System.out.println("======Solucion Backtracking======");
+            int total = 0;
             for (Movimiento movimiento : solucion) {
                 System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
                         + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+                total += movimiento.getPuntos();
             }
-            System.out.println("====================================");
-
+            System.out.println(" Total puntos >>>> "+total);
+            System.out.println("=================================");*/
             arr.add(solucion);
         } else {
             ArrayList<Movimiento> movimientos = getMovimientosValidos(perm.get(num), ori, perm, primerMov);
             for (Movimiento movimiento : movimientos) {
+                //if(calcularPuntos(movimiento.getFicha(), movimiento.getFila(), movimiento.getColumna(), perm) > 0){
                 solucion.add(movimiento);
                 this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = movimiento.getFicha();
-                //num += 1;
-                backtrackingJugadas(num+1, perm, solucion, arr, primerMov, ori);
-                //num -= 1;
+                backtrackingJugadas(num + 1, perm, solucion, arr, primerMov, ori);
                 this.matrizFichas[movimiento.getFila()][movimiento.getColumna()] = null;
                 solucion.remove(movimiento);
+                //}                
             }
         }
     }
@@ -311,12 +285,14 @@ public class Jugador {
         ArrayList<Movimiento> listMovimientos = new ArrayList<Movimiento>();
         for (int i = 0; i < this.matrizFichas.length; i++) {
             if (orientacion == OrientacionType.COLUMNA) {
-                if (this.matrizFichas[i][primerMov.getColumna()] == null && calcularPuntos(ficha, i, primerMov.getColumna(), perm) > 0) {
-                    listMovimientos.add(new Movimiento(i, primerMov.getColumna(), calcularPuntos(ficha, i, primerMov.getColumna(), perm), ficha));
+                int puntos = calcularPuntos(ficha, i, primerMov.getColumna(), perm);
+                if (this.matrizFichas[i][primerMov.getColumna()] == null && puntos > 0) {
+                    listMovimientos.add(new Movimiento(i, primerMov.getColumna(), puntos, ficha));
                 }
             } else {
-                if (this.matrizFichas[primerMov.getFila()][i] == null && calcularPuntos(ficha, primerMov.getFila(), i, perm) > 0) {
-                    listMovimientos.add(new Movimiento(primerMov.getFila(), i, calcularPuntos(ficha, primerMov.getFila(), i, perm), ficha));
+                int puntos = calcularPuntos(ficha, primerMov.getFila(), i, perm);
+                if (this.matrizFichas[primerMov.getFila()][i] == null && puntos > 0) {
+                    listMovimientos.add(new Movimiento(primerMov.getFila(), i, puntos, ficha));
                 }
             }
         }
@@ -332,17 +308,14 @@ public class Jugador {
                 for (OrientacionType orientacion : OrientacionType.values()) {
                     ArrayList<Movimiento> solucion = new ArrayList<Movimiento>();
                     solucion.add(primerMovimiento);
+                    this.matrizFichas[primerMovimiento.getFila()][primerMovimiento.getColumna()] = primerMovimiento.getFicha();
                     backtrackingJugadas(1, subconjunto, solucion, arr, primerMovimiento, orientacion);
-
+                    this.matrizFichas[primerMovimiento.getFila()][primerMovimiento.getColumna()] = null;
                 }
             }
-            //System.out.println("tam arr : " + arr.size());
-            /*for (ArrayList<Movimiento> movimientos : arr) {
-                jugadas = convertMoviAJugada(movimientos);
-            }*/
             
             for (ArrayList<Movimiento> arrMovimientos : arr) {
-                    jugadas.add(new Jugada(arrMovimientos));
+                jugadas.add(new Jugada(arrMovimientos));
             }
             
         } else {
@@ -351,35 +324,25 @@ public class Jugador {
                 movimientos.add(movimiento);
                 jugadas.add(new Jugada(movimientos));
             }
-            //jugadas = convertMoviAJugada(primerosMovimientos);
-        }
-        return jugadas;
-
-    }
-
-    public ArrayList<Jugada> convertMoviAJugada(ArrayList<Movimiento> movimientos) {
-        ArrayList<Jugada> jugadas = new ArrayList<>();
-        for (Movimiento movimiento : movimientos) {
-            jugadas.add(new Jugada(movimientos));
         }
         return jugadas;
     }
 
     public int calcularPuntos(Ficha ficha, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
-
         //System.out.println("F: "+fila+" / C:"+columna);
         if (fila > 0 && columna > 0 && fila < this.matrizFichas.length - 1 && columna < this.matrizFichas.length - 1) {
-            if (validarFigura(ficha, fila, columna, subconjunto) > 0) {
-                puntos += validarFigura(ficha, fila, columna, subconjunto);
+            int puntosPorFigura = validarFigura(ficha, fila, columna, subconjunto);
+            if (puntosPorFigura > 0) {
+                puntos += puntosPorFigura;
             }
-            if (validarColor(ficha, fila, columna, subconjunto) > 0) {
-                puntos += validarColor(ficha, fila, columna, subconjunto);
+            int puntosPorColor = validarColor(ficha, fila, columna, subconjunto); 
+            if (puntosPorColor > 0) {
+                puntos += puntosPorColor;
             }
             if (puntos > 0) {
                 return puntos;
             }
-
         }
         return 0;
     }
@@ -389,19 +352,23 @@ public class Jugador {
 
         if (this.matrizFichas[fila][columna - 1] != null) {
             int izquierda = validarFiguraHaciaLaIzquierda(fichaActual, fila, columna, subconjunto); // retorna los puntos y 0 (no hay fichas alrededor)
-            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila][columna + 1] != null) {
             int derecha = validarFiguraHaciaLaDerecha(fichaActual, fila, columna, subconjunto);;
-            puntos += derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila - 1][columna] != null) {
             int arriba = validarFiguraHaciaArriba(fichaActual, fila, columna, subconjunto);;
-            puntos += arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila + 1][columna] != null) {
             int abajo = validarFiguraHaciaAbajo(fichaActual, fila, columna, subconjunto);;
-            puntos += abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo == 6 ? puntos + 6 : puntos + 0;
         }
 
         if (puntos > 0) {
@@ -416,19 +383,23 @@ public class Jugador {
         //boolean res = false;
         if (this.matrizFichas[fila][columna - 1] != null) {
             int izquierda = validarColorHaciaLaIzquierda(fichaActual, fila, columna, subconjunto); // retorna los puntos y 0 (no hay fichas alrededor)
-            puntos += izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda >= 0 ? puntos + izquierda : puntos - 1000;
+            puntos = izquierda == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila][columna + 1] != null) {
             int derecha = validarColorHaciaLaDerecha(fichaActual, fila, columna, subconjunto);
-            puntos += derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha >= 0 ? puntos + derecha : puntos - 1000;
+            puntos = derecha == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila - 1][columna] != null) {
             int arriba = validarColorHaciaArriba(fichaActual, fila, columna, subconjunto);
-            puntos += arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba >= 0 ? puntos + arriba : puntos - 1000;
+            puntos = arriba == 6 ? puntos + 6 : puntos + 0;
         }
         if (this.matrizFichas[fila + 1][columna] != null) {
             int abajo = validarColorHaciaAbajo(fichaActual, fila, columna, subconjunto);
-            puntos += abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo >= 0 ? puntos + abajo : puntos - 1000;
+            puntos = abajo == 6 ? puntos + 6 : puntos + 0;
         }
         if (puntos > 0) {
             return puntos;
@@ -439,123 +410,163 @@ public class Jugador {
 
     public int validarFiguraHaciaLaIzquierda(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = columna - 1; matrizFichas[fila][i] != null && i > 0; i--) {
             if (matrizFichas[fila][i].getColor() != fichaActual.getColor()
-                    || matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {
-                //return false;
+                    || matrizFichas[fila][i].getFigura() == fichaActual.getFigura()
+                    || matrizFichas[fila][i].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
             if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
-                return 1;
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public int validarFiguraHaciaLaDerecha(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = columna + 1; matrizFichas[fila][i] != null && i < matrizFichas.length - 1; i++) {
             if (matrizFichas[fila][i].getColor() != fichaActual.getColor()
-                    || matrizFichas[fila][i].getFigura() == fichaActual.getFigura()) {
+                    || matrizFichas[fila][i].getFigura() == fichaActual.getFigura()
+                    || matrizFichas[fila][i].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
             if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
-                return 1;
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public int validarFiguraHaciaArriba(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = fila - 1; matrizFichas[i][columna] != null && i > 0; i--) {
             if (matrizFichas[i][columna].getColor() != fichaActual.getColor()
-                    || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()) {
+                    || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()
+                    || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
-                return 1;
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public int validarFiguraHaciaAbajo(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = fila + 1; matrizFichas[i][columna] != null && i < matrizFichas.length - 1; i++) {
             if (matrizFichas[i][columna].getColor() != fichaActual.getColor()
-                    || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()) {
+                    || matrizFichas[i][columna].getFigura() == fichaActual.getFigura()
+                    || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
-                return 1;
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+                estaEnSubconjunto = true;
             }
             puntos++;
+        }
+        if(estaEnSubconjunto){
+            return 1;
         }
         return puntos;
     }
 
     public int validarColorHaciaLaIzquierda(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = columna - 1; matrizFichas[fila][i] != null && i > 0; i--) {
             if (matrizFichas[fila][i].getColor() == fichaActual.getColor()
-                    || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {
+                    || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()
+                    || matrizFichas[fila][i].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
             if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
-                return 1;
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        //System.out.println("cantidad de puntos por la izquierda"+puntos);
+        return puntos+1;
     }
 
     public int validarColorHaciaLaDerecha(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = columna + 1; matrizFichas[fila][i] != null && i < matrizFichas.length - 1; i++) {
             if (matrizFichas[fila][i].getColor() == fichaActual.getColor()
-                    || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()) {
+                    || matrizFichas[fila][i].getFigura() != fichaActual.getFigura()
+                    || matrizFichas[fila][i].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
             if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
-                return 1;
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public int validarColorHaciaArriba(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = fila - 1; matrizFichas[i][columna] != null && i > 0; i--) {
             if (matrizFichas[i][columna].getColor() == fichaActual.getColor()
-                    || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()) {
+                    || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()
+                    || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
-                return 1;
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public int validarColorHaciaAbajo(Ficha fichaActual, int fila, int columna, ArrayList<Ficha> subconjunto) {
         int puntos = 0;
+        boolean estaEnSubconjunto = false;
         for (int i = fila + 1; matrizFichas[i][columna] != null && i < matrizFichas.length - 1; i++) {
             if (matrizFichas[i][columna].getColor() == fichaActual.getColor()
-                    || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()) {
+                    || matrizFichas[i][columna].getFigura() != fichaActual.getFigura()
+                    || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
-                return 1;
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+                estaEnSubconjunto = true;
             }
             puntos++;
         }
-        return puntos;
+        if(estaEnSubconjunto){
+            return 1;
+        }
+        return puntos+1;
     }
 
     public boolean estaEnLaSubconjunto(ArrayList<Ficha> subconjunto, Ficha ficha) {
@@ -565,33 +576,6 @@ public class Jugador {
             }
         }
         return false;
-    }
-
-    //aqui asignamos  tipo y orientacion
-    public void determinarTipoJugada(Ficha ficha, int fila, int columna) {
-        if (ficha.getTipo() != primerJugada.getFicha().getTipo()) {
-            //AQUI DETERMINA EL TIPO DE JUGADA
-            if (ficha.getColor() == primerJugada.getFicha().getColor()) {
-                this.setTipoJugadaActual(JugadaType.PORCOLOR);
-            } else if (ficha.getFigura() == primerJugada.getFicha().getFigura()) {
-                this.setTipoJugadaActual(JugadaType.PORFIGURA);
-            } else {
-                this.setTipoJugadaActual(null);
-            }
-            //AQUI DETERMINA EL TIPO DE ORIENTACION
-            if (fila == primerJugada.getFila()) {
-                this.setOrientacion(OrientacionType.FILA);
-
-            } else if (columna == primerJugada.getColumna()) {
-                this.setOrientacion(OrientacionType.COLUMNA);
-
-            } else {
-                this.setOrientacion(null);
-            }
-        } else {
-            this.setTipoJugadaActual(null);
-            this.setOrientacion(null);
-        }
     }
 
     public void permutarFichas(ArrayList<Ficha> conjunto, int tamano, ArrayList<ArrayList<Ficha>> todas) {
@@ -617,7 +601,7 @@ public class Jugador {
 
         int queEs = 0;//0 indef, 1 es color, 2 es figura
 
-        System.out.println("sub de mano : " + lista.size());
+        //System.out.println("sub de mano : " + lista.size());
 
 
         /*
@@ -709,19 +693,26 @@ public class Jugador {
     }
 
     public Jugada getMejorJugada() {
-        Jugada mayor = null;
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
         System.out.println("tamaño de todas las jugadas " + jugadas.size());
+        Jugada mayor = jugadas.get(0);
         if (jugadas.size() > 0) {
-            mayor = jugadas.get(0);
-            for (int i = 1; i < jugadas.size(); i++) {
-                System.out.println("puntaje de " + i + "jugada : " +  jugadas.get(i).getPuntajeTotal()) ;
+            for (int i = 0; i < jugadas.size(); i++) {
+                //System.out.println("puntaje de " + i + " jugada : " +  jugadas.get(i).getPuntajeTotal()) ;
                 if (mayor.getPuntajeTotal() < jugadas.get(i).getPuntajeTotal()) {
+                    //System.out.println("ANTES -> MAYOR: " + mayor.getPuntajeTotal() + " -> JUGADA MAYOR : " +  jugadas.get(i).getPuntajeTotal());
                     mayor = jugadas.get(i);
+                    //System.out.println("DESPUES -> MAYOR: " + jugadas.get(i).getPuntajeTotal() + " -> JUGADA MENOS : " +  mayor.getPuntajeTotal());
                 }
             }
         }
-
+        System.out.println("********JUGADA CON MAS PUNTOS*********");
+        for (Movimiento movimiento : mayor.getMovimientos()) {
+            System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                    + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+        }
+        System.out.println("Total de puntos: "+ mayor.getPuntajeTotal());
+        System.out.println("**************************************");
         return mayor;
     }
 
@@ -753,15 +744,15 @@ public class Jugador {
                     //revisar porque entra null
                     ArrayList<Jugada> jug = getListaJugadas(permutacionesDe.get(j));
                     jugadas.addAll(jug);
-                    /*
+                    
                     for (Jugada jugada : jug) {
                         for (Movimiento movimiento : jugada.getMovimientos()) {
                             System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
                                     + movimiento.getColumna() + " p : " + movimiento.getPuntos());
                         }
-                        System.out.println("");
+                        System.out.println("TOTAL DE PUNTOS **>>>"+jugada.puntajeTotal);
                     }
-                     */
+                     
                 }
             }
 
@@ -776,10 +767,8 @@ public class Jugador {
                     mano[i]=null;
                     break;
                 }
-            }
-            
+            }            
         }
     }
 
-    
 }
