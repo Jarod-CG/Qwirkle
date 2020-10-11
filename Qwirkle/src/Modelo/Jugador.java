@@ -255,18 +255,21 @@ public class Jugador {
         return primerosMovimientos;
     }
 
-    public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<ArrayList<Movimiento>> arr, Movimiento primerMov, OrientacionType ori) {
+    public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<Jugada> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
-            /*System.out.println("======Solucion Backtracking======");
+            System.out.println("======Solucion Backtracking======");
+            ArrayList<Movimiento> nuevaSolucion = new ArrayList<>();
             int total = 0;
             for (Movimiento movimiento : solucion) {
+                nuevaSolucion.add(movimiento);
                 System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
                         + movimiento.getColumna() + " p : " + movimiento.getPuntos());
-                total += movimiento.getPuntos();
+                total += movimiento.getPuntos();   
             }
             System.out.println(" Total puntos >>>> "+total);
-            System.out.println("=================================");*/
-            arr.add(solucion);
+            System.out.println("=================================");
+            arr.add(new Jugada(nuevaSolucion));
+            //arr.add(solucion);
         } else {
             ArrayList<Movimiento> movimientos = getMovimientosValidos(perm.get(num), ori, perm, primerMov);
             for (Movimiento movimiento : movimientos) {
@@ -303,7 +306,7 @@ public class Jugador {
         ArrayList<Jugada> jugadas = new ArrayList<>();
         ArrayList<Movimiento> primerosMovimientos = getListaPrimerosMovimientos(subconjunto.get(0), subconjunto);
         if (subconjunto.size() > 1) {
-            ArrayList<ArrayList<Movimiento>> arr = new ArrayList<ArrayList<Movimiento>>();
+            ArrayList<Jugada> arr = new ArrayList<Jugada>();
             for (Movimiento primerMovimiento : primerosMovimientos) {
                 for (OrientacionType orientacion : OrientacionType.values()) {
                     ArrayList<Movimiento> solucion = new ArrayList<Movimiento>();
@@ -313,17 +316,16 @@ public class Jugador {
                     this.matrizFichas[primerMovimiento.getFila()][primerMovimiento.getColumna()] = null;
                 }
             }
-            
-            for (ArrayList<Movimiento> arrMovimientos : arr) {
+            /*for (ArrayList<Movimiento> arrMovimientos : arr) {
                 jugadas.add(new Jugada(arrMovimientos));
-            }
-            
+            }*/
+            jugadas.addAll(arr);            
         } else {
-            for (Movimiento movimiento : primerosMovimientos) {
+            /*for (Movimiento movimiento : primerosMovimientos) {
                 ArrayList<Movimiento> movimientos = new ArrayList<>();
                 movimientos.add(movimiento);
                 jugadas.add(new Jugada(movimientos));
-            }
+            }*/
         }
         return jugadas;
     }
@@ -602,8 +604,6 @@ public class Jugador {
         int queEs = 0;//0 indef, 1 es color, 2 es figura
 
         //System.out.println("sub de mano : " + lista.size());
-
-
         /*
         por algpun motivo lista despues de pasat por parteDe
         queda con una lista null al inicio
@@ -614,7 +614,6 @@ public class Jugador {
         for (int i = 0; i < lista.size(); i++) {
             //recorre el subconjunto
             ArrayList<Ficha> sub = lista.get(i);
-
             for (int j = 1; j < sub.size(); j++) {
                 
                 /*
@@ -650,15 +649,12 @@ public class Jugador {
             lista.remove(remover.get(i));
         }
         //retorna todas
-
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).size() == 0) {
                 lista.remove(lista.get(i));
             }
         }
-
         return lista;
-
     }
     
     private boolean coincideColor(ArrayList<Ficha> sub) {
@@ -725,12 +721,10 @@ public class Jugador {
         //System.out.println("Tam com : " + combinaciones.size());
         //la mano llega bien
         for (int i = 0; i < combinaciones.size(); i++) {
-
             //permuto cada combinacion
             ArrayList<ArrayList<Ficha>> permutacionesDe = new ArrayList();
             permutarFichas(combinaciones.get(i), combinaciones.get(i).size(), permutacionesDe);
             //ahora recorro cada una de las permutaciones
-
             //System.out.println("Tamano permutaciones: " + permutacionesDe.size());
             for (int j = 0; j < permutacionesDe.size(); j++) {
                 /*
@@ -743,20 +737,19 @@ public class Jugador {
                 if (permutacionesDe.get(j) != null) {
                     //revisar porque entra null
                     ArrayList<Jugada> jug = getListaJugadas(permutacionesDe.get(j));
-                    jugadas.addAll(jug);
-                    
-                    for (Jugada jugada : jug) {
-                        for (Movimiento movimiento : jugada.getMovimientos()) {
-                            System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
-                                    + movimiento.getColumna() + " p : " + movimiento.getPuntos());
-                        }
-                        System.out.println("TOTAL DE PUNTOS **>>>"+jugada.puntajeTotal);
-                    }
-                     
+                    jugadas.addAll(jug);                     
                 }
             }
 
         }
+        /*for (Jugada jugada : jugadas) {
+            System.out.println("TAMANO DE LA JUGADA **>>>" + jugada.getMovimientos().size());
+            for (Movimiento movimiento : jugada.getMovimientos()) {
+                System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                        + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+            }
+            System.out.println("TOTAL DE PUNTOS **>>>" + jugada.puntajeTotal);
+        }*/
         return jugadas;
     }
 
