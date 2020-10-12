@@ -105,8 +105,8 @@ public class Juego {
     }
     
     
-
-    public void jugar() {
+    //retorna true cuando hay ganador
+    public boolean jugar() {
         Jugador jugador = jugadores.get(turno++ % jugadores.size());
 
         //aqui llamar al backtracking
@@ -119,13 +119,31 @@ public class Juego {
             //elimanr fichas de la mano
             jugador.eliminarFichas (jugada.getMovimientos());
             jugador.actualizarMano();
+            if (jugador.getTamMano()==0) {
+                jugador.sumarPuntaje(6);
+                return true;
+            }
 
         }
         else {
             jugador.setPuntajeUltima(0);
+            jugador.cambiarMano();
         }
+        return false;
         //si es null significa que no encontro una solucion valida
 
+    }
+    
+    public int getGanador () {
+        Jugador mayor = jugadores.get(0);
+        
+        for (int i = 1; i < jugadores.size(); i++) {
+            if (mayor.getPuntaje() < jugadores.get(i).getPuntaje()) {
+                mayor = jugadores.get(i);
+                
+            }
+        }
+        return jugadores.indexOf(mayor)+1;
     }
 
     public void aplicarJugada(Jugada jugada) {

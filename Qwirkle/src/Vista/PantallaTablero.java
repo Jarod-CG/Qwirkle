@@ -37,7 +37,7 @@ public class PantallaTablero extends javax.swing.JFrame {
                 butArray[i][j] = new JButton();
                 butArray[i][j].setBackground(new Color(255,255,255));
 
-                butArray[i][j].setPreferredSize(new Dimension(45,45));
+                butArray[i][j].setPreferredSize(new Dimension(35,35));
                 //butArray[i][j].setFont(new Font("Arial", Font.PLAIN, 7));
                 pnlFichas.add(butArray[i][j]);
             }
