@@ -23,10 +23,12 @@ public class Qwirkle {
 
         //ControladorMenu controladorMenu = new ControladorMenu();
         
-        Juego juego = new Juego (3, 0, 0, 15);
+        
+        int tam = 21;
+        Juego juego = new Juego (3, 0, 0, tam);
                     
                     
-        ControladorTablero controladorTablero = new ControladorTablero(juego, 15);
+        ControladorTablero controladorTablero = new ControladorTablero(juego, tam);
         
         
 

@@ -18,6 +18,7 @@ public class Jugador {
     protected double puntaje;
     protected ArrayList<Ficha> fichas;
     protected Ficha[] mano;
+    int puntajeUltima;
 
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
@@ -30,10 +31,21 @@ public class Jugador {
 
     public Jugador(Ficha[][] matrizFichas) {
         this.puntaje = 0;
+        this.puntajeUltima = 0;
         this.fichas = new ArrayList();
         this.mano = new Ficha[6];
         this.matrizFichas = matrizFichas;
     }
+
+    public int getPuntajeUltima() {
+        return puntajeUltima;
+    }
+
+    public void setPuntajeUltima(int puntajeUltima) {
+        this.puntajeUltima = puntajeUltima;
+    }
+    
+    
 
     public void sumarPuntaje(int num) {
         puntaje += num;
@@ -290,17 +302,51 @@ public class Jugador {
             if (orientacion == OrientacionType.COLUMNA) {
                 int puntos = calcularPuntos(ficha, i, primerMov.getColumna(), perm);
                 if (this.matrizFichas[i][primerMov.getColumna()] == null && puntos > 0) {
-                    listMovimientos.add(new Movimiento(i, primerMov.getColumna(), puntos, ficha));
+                    if (validarEntre(primerMov, orientacion, i)) {
+                        listMovimientos.add(new Movimiento(i, primerMov.getColumna(), puntos, ficha));
+                    }
+                    
                 }
             } else {
                 int puntos = calcularPuntos(ficha, primerMov.getFila(), i, perm);
                 if (this.matrizFichas[primerMov.getFila()][i] == null && puntos > 0) {
-                    listMovimientos.add(new Movimiento(primerMov.getFila(), i, puntos, ficha));
+                    if (validarEntre(primerMov, orientacion, i)) {
+                        listMovimientos.add(new Movimiento(primerMov.getFila(), i, puntos, ficha));
+                    }
                 }
             }
         }
         return listMovimientos;
     }
+    
+    private boolean validarEntre (Movimiento primerMov, OrientacionType orientacion, int num){
+        int mayor, menor;
+        switch (orientacion) {
+            case COLUMNA:
+                mayor = num < primerMov.getFila() ? primerMov.getFila() : num;
+//                menor = mayor == primerMov.getFila() ? num : primerMov.getFila();//tener cuidado
+                menor = num < primerMov.getFila() ? num : primerMov.getFila();//tener cuidado
+                for (int i = menor+1; i < mayor; i++) {
+                    if (this.matrizFichas[i][primerMov.getColumna()]==null) {
+                        return false;
+                    }
+                }
+                break;
+            case FILA:
+                mayor = num < primerMov.getColumna()? primerMov.getColumna() : num;
+//                menor = mayor == primerMov.getColumna() ? num : primerMov.getColumna();//tener cuidado
+                menor = num < primerMov.getColumna() ? num : primerMov.getColumna();//tener cuidado
+                for (int i = menor+1; i < mayor; i++) {
+                    if (this.matrizFichas[primerMov.getFila()][i]==null) {
+                        return false;
+                    }
+                }
+                break;
+        }
+        return true;
+        
+    }
+    
 
     public ArrayList<Jugada> getListaJugadas(ArrayList<Ficha> subconjunto) { //AQUI LAS PERMUTACIONES DE LA MANO 
         ArrayList<Jugada> jugadas = new ArrayList<>();
@@ -321,11 +367,11 @@ public class Jugador {
             }*/
             jugadas.addAll(arr);            
         } else {
-            /*for (Movimiento movimiento : primerosMovimientos) {
+            for (Movimiento movimiento : primerosMovimientos) {
                 ArrayList<Movimiento> movimientos = new ArrayList<>();
                 movimientos.add(movimiento);
                 jugadas.add(new Jugada(movimientos));
-            }*/
+            }
         }
         return jugadas;
     }
@@ -459,7 +505,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 estaEnSubconjunto = true;
             }
             puntos++;
@@ -479,7 +525,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 estaEnSubconjunto = true;
             }
             puntos++;
@@ -540,7 +586,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 estaEnSubconjunto = true;
             }
             puntos++;
@@ -560,7 +606,7 @@ public class Jugador {
                     || matrizFichas[i][columna].getTipo() == fichaActual.getTipo()) {
                 return -1;
             }
-            if (estaEnLaSubconjunto(subconjunto, matrizFichas[fila][i]) == true) {
+            if (estaEnLaSubconjunto(subconjunto, matrizFichas[i][columna]) == true) {
                 estaEnSubconjunto = true;
             }
             puntos++;
@@ -572,12 +618,8 @@ public class Jugador {
     }
 
     public boolean estaEnLaSubconjunto(ArrayList<Ficha> subconjunto, Ficha ficha) {
-        for (Ficha ficha1 : subconjunto) {
-            if (ficha == ficha1) {
-                return true;
-            }
-        }
-        return false;
+        
+        return subconjunto.contains(ficha);
     }
 
     public void permutarFichas(ArrayList<Ficha> conjunto, int tamano, ArrayList<ArrayList<Ficha>> todas) {
@@ -626,13 +668,13 @@ public class Jugador {
                 */
                 
                 if (sub.get(j - 1).getColor().equals(sub.get(j).getColor())) {
-                    if (!coincideColor(sub)){
+                    if (!coincideColor(sub)&&!noRepetidas(sub)){
                        remover.add(sub);
                         break; 
                     }
                 }
                 else if (sub.get(j - 1).getFigura().equals(sub.get(j).getFigura())) {
-                    if (!coincideFigura(sub)){
+                    if (!coincideFigura(sub)&&!noRepetidas(sub)){
                        remover.add(sub);
                         break; 
                     }
@@ -666,6 +708,17 @@ public class Jugador {
         }
         return true;
     }
+    
+    private boolean noRepetidas (ArrayList<Ficha> sub) {
+       for (int i = 1; i < sub.size(); i++) {
+            for (int j = i+1; j < sub.size(); j++) {
+                if (sub.get(i).getTipo().equals(sub.get(j).getTipo())) {
+                    return false;
+                }
+           }
+        }
+        return true;
+    }
     private boolean coincideFigura(ArrayList<Ficha> sub) {
         
         for (int i = 1; i < sub.size(); i++) {
@@ -691,7 +744,12 @@ public class Jugador {
     public Jugada getMejorJugada() {
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
         System.out.println("tamaño de todas las jugadas " + jugadas.size());
+        if (jugadas.size()==0) return null;
         Jugada mayor = jugadas.get(0);
+        
+        
+        
+        
         if (jugadas.size() > 0) {
             for (int i = 0; i < jugadas.size(); i++) {
                 //System.out.println("puntaje de " + i + " jugada : " +  jugadas.get(i).getPuntajeTotal()) ;
@@ -711,6 +769,9 @@ public class Jugador {
         System.out.println("**************************************");
         return mayor;
     }
+    
+    
+    
 
     public ArrayList<Jugada> getTodasLasJugadas() {
         ArrayList<ArrayList<Movimiento>> arr = new ArrayList();

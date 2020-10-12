@@ -35,8 +35,8 @@ public class ControladorTablero implements ActionListener {
         _init_();
         update();
     }
-    
-    public ControladorTablero(Juego juego,  int n) {
+
+    public ControladorTablero(Juego juego, int n) {
         this.juego = juego;
         this.pantallaTablero = new PantallaTablero();
         this.pantallaTablero.setN(n);
@@ -81,21 +81,25 @@ public class ControladorTablero implements ActionListener {
 
         }
     }
-    
-    private void update(){
+
+    private void update() {
         setImagenes();
         puntajes();
     }
-    
-    private void puntajes(){
-        String str = "<html>";
+
+    private void puntajes() {
+        String str = "<html>Turno : " + Integer.toString(juego.getTurno() + 1) + "<br/>";
+        str += "Juega : Jugador " + Integer.toString((juego.getTurno()%juego.getJugadores().size())+1)+ "<br/>";
         for (int i = 0; i < juego.getJugadores().size(); i++) {
-            str += "Jugador " + Integer.toString(i+1) + " : " + Float.toString((float) juego.getJugadores().get(i).getPuntaje());
+            str += "Jugador " + Integer.toString(i + 1) + " : " + Float.toString((float) juego.getJugadores().get(i).getPuntaje());
+
+            str += "    (" + juego.getJugadores().get(i).getPuntajeUltima() + " pts)";
+
             str += "<br/>";
-            
+
         }
         str += "<html/>";
-        
+
         pantallaTablero.lblTurno.setText(str);
     }
 
@@ -105,12 +109,22 @@ public class ControladorTablero implements ActionListener {
     }
 
     private void setTablero() {
+        
+        int height = pantallaTablero.butArray[0][0].getHeight();
+        int width =pantallaTablero.butArray[0][0].getWidth();
+                
+        
         for (int i = 0; i < juego.getMatrizFichas().length; i++) {
             for (int j = 0; j < juego.getMatrizFichas()[i].length; j++) {
                 if (juego.getMatrizFichas()[i][j] != null) {
-                    
+
                     JButton b = pantallaTablero.butArray[i][j];
-                    b.setIcon(new ImageIcon(juego.getMatrizFichas()[i][j].getImagen()));
+                    ImageIcon ima = new ImageIcon(juego.getMatrizFichas()[i][j].getImagen());
+                    Image im = ima.getImage();
+                    Image newI = im.getScaledInstance(height, width,  java.awt.Image.SCALE_SMOOTH);
+
+                    ima = new ImageIcon(newI);  // transform it back
+                    b.setIcon(ima);
                     b.setOpaque(false);
                     b.setContentAreaFilled(false);
                     b.setBorderPainted(false);
@@ -120,6 +134,8 @@ public class ControladorTablero implements ActionListener {
     }
 
     private void setManos() {
+        int height = pantallaTablero.butArray[0][0].getHeight();
+        int width =pantallaTablero.butArray[0][0].getWidth();
         for (int i = 0; i < pantallaTablero.fichasJugadores.length; i++) {
             Jugador jugador = juego.getJugadores().get(i);
             for (int j = 0; j < pantallaTablero.fichasJugadores[i].length; j++) {
@@ -128,9 +144,14 @@ public class ControladorTablero implements ActionListener {
                     JButton b = pantallaTablero.fichasJugadores[i][j];
 
                     
+                    ImageIcon ima = new ImageIcon(jugador.getMano()[j].getImagen());
+                    Image im = ima.getImage();
+                    Image newI = im.getScaledInstance(height, width,  java.awt.Image.SCALE_SMOOTH);
+
+                    ima = new ImageIcon(newI);  // transform it back
                     
-                    b.setIcon(new ImageIcon(jugador.getMano()[j].getImagen()));
-        
+                    b.setIcon(ima);
+
                     b.setOpaque(false);
                     b.setContentAreaFilled(false);
                     b.setBorderPainted(false);

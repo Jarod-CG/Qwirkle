@@ -100,6 +100,12 @@ public class Juego {
         this.fichas = fichas;
     }
 
+    public int getTurno() {
+        return turno;
+    }
+    
+    
+
     public void jugar() {
         Jugador jugador = jugadores.get(turno++ % jugadores.size());
 
@@ -107,12 +113,16 @@ public class Juego {
         Jugada jugada = jugador.getMejorJugada();
         if (jugada != null) {
             jugador.sumarPuntaje(jugada.puntajeTotal);
+            jugador.setPuntajeUltima(jugada.puntajeTotal);
 
             aplicarJugada(jugada);
             //elimanr fichas de la mano
             jugador.eliminarFichas (jugada.getMovimientos());
             jugador.actualizarMano();
 
+        }
+        else {
+            jugador.setPuntajeUltima(0);
         }
         //si es null significa que no encontro una solucion valida
 
