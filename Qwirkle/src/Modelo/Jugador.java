@@ -270,19 +270,20 @@ public class Jugador {
 
     public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<Jugada> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
-            System.out.println("======Solucion Backtracking======");
-            ArrayList<Movimiento> nuevaSolucion = new ArrayList<>();
-            int total = 0;
-            for (Movimiento movimiento : solucion) {
-                nuevaSolucion.add(movimiento);
-                System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
-                        + movimiento.getColumna() + " p : " + movimiento.getPuntos());
-                total += movimiento.getPuntos();
+            if (jugadaValida(solucion)) {
+                System.out.println("======Solucion Backtracking======");
+                ArrayList<Movimiento> nuevaSolucion = new ArrayList<>();
+                int total = 0;
+                for (Movimiento movimiento : solucion) {
+                    nuevaSolucion.add(movimiento);
+                    System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                            + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+                    total += movimiento.getPuntos();
+                }
+                System.out.println(" Total puntos >>>> " + total);
+                System.out.println("=================================");
+                arr.add(new Jugada(nuevaSolucion));
             }
-            System.out.println(" Total puntos >>>> " + total);
-            System.out.println("=================================");
-            arr.add(new Jugada(nuevaSolucion));
-            //arr.add(solucion);
         } else {
             ArrayList<Movimiento> movimientos = getMovimientosValidos(perm.get(num), ori, perm, primerMov);
             for (Movimiento movimiento : movimientos) {
@@ -296,6 +297,37 @@ public class Jugador {
             }
         }
     }
+    
+    public boolean jugadaValida(ArrayList<Movimiento> solucion){
+        ArrayList<Ficha> perm = new ArrayList<>();
+        for (Movimiento movimiento : solucion) {
+            perm.add(movimiento.getFicha());
+        }
+        this.ponerFichas(solucion);
+        for (Movimiento movimiento : solucion) {
+            if(calcularPuntos(movimiento.getFicha(), movimiento.getFila(), movimiento.getColumna(), perm) <= 0){
+                this.quitarFichas(solucion);
+                return false;
+            }                
+        }
+        this.quitarFichas(solucion);
+        return true;
+    }
+    
+    public void ponerFichas(ArrayList<Movimiento> solucion){
+        for (Movimiento mov : solucion) {
+            this.matrizFichas[mov.getFila()][mov.getColumna()] = mov.getFicha();
+        }
+    }
+    
+    public void quitarFichas(ArrayList<Movimiento> solucion){
+        for (Movimiento mov : solucion) {
+            this.matrizFichas[mov.getFila()][mov.getColumna()] = null;
+        }
+    }
+    
+    
+    
 
     public ArrayList<Movimiento> getMovimientosValidos(Ficha ficha, OrientacionType orientacion, ArrayList<Ficha> perm, Movimiento primerMov) {
         ArrayList<Movimiento> listMovimientos = new ArrayList<Movimiento>();
@@ -469,6 +501,7 @@ public class Jugador {
                 estaEnSubconjunto = true;
             }
             puntos++;
+            
         }
         if (estaEnSubconjunto) {
             return 1;
