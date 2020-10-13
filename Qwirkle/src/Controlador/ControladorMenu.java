@@ -98,7 +98,7 @@ public class ControladorMenu implements ActionListener{
                 int numHum = Integer.parseInt(pantallaMenu.lblPla.getText());
                 if (numSim>0 && numAva >0) {
                     int n = Integer.parseInt(pantallaMenu.txtTamano.getText());
-                    this.juego = new Juego (numSim, numAva, numHum,n);
+                    this.juego = new Juego (numSim, numAva,n);
                     //cerrar esta pantalla 
                     pantallaMenu.dispose();
                     //abrir la del tablero

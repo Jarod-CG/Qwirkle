@@ -25,7 +25,7 @@ public class Qwirkle {
         
         
         int tam = 21;
-        Juego juego = new Juego (3, 0, 0, tam);
+        Juego juego = new Juego (2, 1, tam);
                     
                     
         ControladorTablero controladorTablero = new ControladorTablero(juego, tam);

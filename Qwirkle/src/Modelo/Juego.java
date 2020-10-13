@@ -24,25 +24,21 @@ public class Juego {
 
     private int turno;
 
-    public Juego(int numSim, int numAva, int numHum, int n) {
+    public Juego(int numSim, int numAva, int n) {
         this.turno = 0;
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
 
         this.matrizFichas = new Ficha[n][n];//el tamaño variaria
-        if (numHum == 1) {
-            //crea un jugador humano
-
-            jugadores.add(new Jugador(matrizFichas));
-        }
+        
         for (int i = 0; i < numSim; i++) {
 
-            jugadores.add(new Jugador(matrizFichas));
+            jugadores.add(new JugadorSimple(matrizFichas));
 
         }
         for (int i = 0; i < numAva; i++) {
-
-            jugadores.add(new Jugador(matrizFichas));
+            System.out.println("avanzado");
+            jugadores.add(new JugadorAvanzado(matrizFichas));
 
         }
         //crear la matriz tablero

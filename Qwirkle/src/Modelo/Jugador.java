@@ -13,7 +13,7 @@ import java.util.Collections;
  *
  * @author Carlos
  */
-public class Jugador {
+public abstract class Jugador  {
 
     protected double puntaje;
     protected ArrayList<Ficha> fichas;
@@ -26,7 +26,7 @@ public class Jugador {
     private Movimiento primerJugada = null;
     private boolean segundaJugada = false;
     private Movimiento ultimaJugada = null;
-    private Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
+    protected Ficha[][] matrizFichas; //no se cosideran los bordes de las matriz
     //de 19x15 fichas visibles, asi que 21x17 por que los bordes no se ven
 
     public Jugador(Ficha[][] matrizFichas) {
@@ -36,9 +36,6 @@ public class Jugador {
         this.mano = new Ficha[6];
         this.matrizFichas = matrizFichas;
     }
-
-    
-    
 
     public int getPuntajeUltima() {
         return puntajeUltima;
@@ -271,17 +268,17 @@ public class Jugador {
     public void backtrackingJugadas(int num, ArrayList<Ficha> perm, ArrayList<Movimiento> solucion, ArrayList<Jugada> arr, Movimiento primerMov, OrientacionType ori) {
         if (num == perm.size()) {
             if (jugadaValida(solucion)) {
-                System.out.println("======Solucion Backtracking======");
+                //System.out.println("======Solucion Backtracking======");
                 ArrayList<Movimiento> nuevaSolucion = new ArrayList<>();
                 int total = 0;
                 for (Movimiento movimiento : solucion) {
                     nuevaSolucion.add(movimiento);
-                    System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                    /*System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
                             + movimiento.getColumna() + " p : " + movimiento.getPuntos());
-                    total += movimiento.getPuntos();
+                    total += movimiento.getPuntos();*/
                 }
-                System.out.println(" Total puntos >>>> " + total);
-                System.out.println("=================================");
+                //System.out.println(" Total puntos >>>> " + total);
+                //System.out.println("=================================");
                 arr.add(new Jugada(nuevaSolucion));
             }
         } else {
@@ -297,37 +294,34 @@ public class Jugador {
             }
         }
     }
-    
-    public boolean jugadaValida(ArrayList<Movimiento> solucion){
+
+    public boolean jugadaValida(ArrayList<Movimiento> solucion) {
         ArrayList<Ficha> perm = new ArrayList<>();
         for (Movimiento movimiento : solucion) {
             perm.add(movimiento.getFicha());
         }
         this.ponerFichas(solucion);
         for (Movimiento movimiento : solucion) {
-            if(calcularPuntos(movimiento.getFicha(), movimiento.getFila(), movimiento.getColumna(), perm) <= 0){
+            if (calcularPuntos(movimiento.getFicha(), movimiento.getFila(), movimiento.getColumna(), perm) <= 0) {
                 this.quitarFichas(solucion);
                 return false;
-            }                
+            }
         }
         this.quitarFichas(solucion);
         return true;
     }
-    
-    public void ponerFichas(ArrayList<Movimiento> solucion){
+
+    public void ponerFichas(ArrayList<Movimiento> solucion) {
         for (Movimiento mov : solucion) {
             this.matrizFichas[mov.getFila()][mov.getColumna()] = mov.getFicha();
         }
     }
-    
-    public void quitarFichas(ArrayList<Movimiento> solucion){
+
+    public void quitarFichas(ArrayList<Movimiento> solucion) {
         for (Movimiento mov : solucion) {
             this.matrizFichas[mov.getFila()][mov.getColumna()] = null;
         }
     }
-    
-    
-    
 
     public ArrayList<Movimiento> getMovimientosValidos(Ficha ficha, OrientacionType orientacion, ArrayList<Ficha> perm, Movimiento primerMov) {
         ArrayList<Movimiento> listMovimientos = new ArrayList<Movimiento>();
@@ -501,7 +495,7 @@ public class Jugador {
                 estaEnSubconjunto = true;
             }
             puntos++;
-            
+
         }
         if (estaEnSubconjunto) {
             return 1;
@@ -693,8 +687,6 @@ public class Jugador {
         por algpun motivo lista despues de pasat por parteDe
         queda con una lista null al inicio
          */
-        
-
         ArrayList<ArrayList<Ficha>> remover = new ArrayList();
         //validar que compartand una propiedad
         //recorre cada subconjunto
@@ -711,30 +703,21 @@ public class Jugador {
                     break;//es para el for anidado
                 }
                  */
-                
-
-                    System.out.println("*****COMBINACIONES*****");
-                    for (int k = 0; k < sub.size(); k++) {
-                        System.out.println(sub.get(k) == null);
-                        System.out.println(sub.get(k).getTipo());
-                    }
-                    System.out.println("****************");
-
-                    if (sub.get(j - 1).getColor().equals(sub.get(j).getColor())) {
-                        if (!coincideColor(sub) && !noRepetidas(sub)) {
-                            remover.add(sub);
-                            break;
-                        }
-                    } else if (sub.get(j - 1).getFigura().equals(sub.get(j).getFigura())) {
-                        if (!coincideFigura(sub) && !noRepetidas(sub)) {
-                            remover.add(sub);
-                            break;
-                        }
-                    } else {
+                if (sub.get(j - 1).getColor().equals(sub.get(j).getColor())) {
+                    if (!coincideColor(sub) && !noRepetidas(sub)) {
                         remover.add(sub);
                         break;
                     }
-                
+                } else if (sub.get(j - 1).getFigura().equals(sub.get(j).getFigura())) {
+                    if (!coincideFigura(sub) && !noRepetidas(sub)) {
+                        remover.add(sub);
+                        break;
+                    }
+                } else {
+                    remover.add(sub);
+                    break;
+                }
+
             }
 
         }
@@ -795,12 +778,15 @@ public class Jugador {
         }
     }
 
+    /*
     public Jugada getMejorJugada() {
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
         System.out.println("tamaño de todas las jugadas " + jugadas.size());
         if (jugadas.size() == 0) {
             return null;
         }
+        
+        
         Jugada mayor = jugadas.get(0);
 
         if (jugadas.size() > 0) {
@@ -821,7 +807,7 @@ public class Jugador {
         System.out.println("Total de puntos: " + mayor.getPuntajeTotal());
         System.out.println("**************************************");
         return mayor;
-    }
+    }*/
 
     public ArrayList<Jugada> getTodasLasJugadas() {
         ArrayList<ArrayList<Movimiento>> arr = new ArrayList();
@@ -878,21 +864,57 @@ public class Jugador {
     public void cambiarMano() {
         //recorro las 6 fichas de la mano
         for (int i = 0; i < mano.length; i++) {
-            this.fichas.add(mano[i]);//meto cada ficha en "bolsa"
-            mano[i] = fichas.get(i);//saco la ficha
-            fichas.remove(mano[i]);//la elimino de la "bolsa"
+            if (mano[i] != null) {
+                this.fichas.add(mano[i]);//meto cada ficha en "bolsa"
+                mano[i] = fichas.get(0);//saco la ficha
+                fichas.remove(mano[i]);//la elimino de la "bolsa" 
+            }
+
         }
 
     }
-    
-    public int getTamMano () {
-        int num= 0;
+
+    public int getTamMano() {
+        int num = 0;
         for (int i = 0; i < mano.length; i++) {
-            if(mano[i]!=null){
+            if (mano[i] != null) {
                 num++;
             }
         }
         return num;
+    }
+
+    
+    public Jugada getMejorJugada() {
+        ArrayList<Jugada> jugadas = getTodasLasJugadas();
+       //System.out.println("tamaño de todas las jugadas " + jugadas.size());
+        if (jugadas.size() == 0) {
+            return null;
+        }
+        
+        
+        Jugada mayor = jugadas.get(0);
+
+        if (jugadas.size() > 0) {
+            for (int i = 0; i < jugadas.size(); i++) {
+                //System.out.println("puntaje de " + i + " jugada : " +  jugadas.get(i).getPuntajeTotal()) ;
+                if (mayor.getPuntajeTotal() < jugadas.get(i).getPuntajeTotal()) {
+                    //System.out.println("ANTES -> MAYOR: " + mayor.getPuntajeTotal() + " -> JUGADA MAYOR : " +  jugadas.get(i).getPuntajeTotal());
+                    mayor = jugadas.get(i);
+                    //System.out.println("DESPUES -> MAYOR: " + jugadas.get(i).getPuntajeTotal() + " -> JUGADA MENOS : " +  mayor.getPuntajeTotal());
+                }
+            }
+        }
+        /*
+        System.out.println("********JUGADA CON MAS PUNTOS*********");
+        for (Movimiento movimiento : mayor.getMovimientos()) {
+            System.out.println(movimiento.getFicha().getTipo() + " fila : " + movimiento.getFila() + " col : "
+                    + movimiento.getColumna() + " p : " + movimiento.getPuntos());
+        }
+        System.out.println("Total de puntos: " + mayor.getPuntajeTotal());
+        System.out.println("**************************************");
+        */
+        return mayor;
     }
 
 }
