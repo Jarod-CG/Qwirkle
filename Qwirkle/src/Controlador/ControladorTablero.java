@@ -65,14 +65,27 @@ public class ControladorTablero implements ActionListener {
         //else para la pantalla del juego
         if (pantallaTablero.isActive()) {
             if (e.getSource().equals(pantallaTablero.btnSiguiente)) {
-                if (juego.jugar()) {
-                    update();
-                    Component frame = null;
-                   
-                    JOptionPane.showMessageDialog(frame, "Ha ganado el Jugador " + Integer.toString(juego.getGanador()), "Felicidades!", JOptionPane.INFORMATION_MESSAGE);
-                    JOptionPane.showMessageDialog(null, "Felicidades");
+                int veces = 1;
+                for (int i = 0; i < veces; i++) {
+                    //System.out.println("Bytes Total: "+Runtime.getRuntime().totalMemory());
+                    double inicio = System.currentTimeMillis();
+
+                    if (juego.jugar()) {
+                        update();
+                        Component frame = null;
+
+                        JOptionPane.showMessageDialog(frame, "Ha ganado el Jugador " + Integer.toString(juego.getGanador()), "Felicidades!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Felicidades");
+                    } else {
+                        update();
+                    }
+                    double fin = System.currentTimeMillis();
+                    double tiempo = ((fin - inicio));
+
+                    
                 }
-                update();
+                
+
             } else if (e.getSource().equals(pantallaTablero.btnSalir)) {
                 pantallaTablero.dispose();
 
@@ -102,8 +115,9 @@ public class ControladorTablero implements ActionListener {
             str += "Jugador " + Integer.toString(i + 1) + " : " + Float.toString((float) juego.getJugadores().get(i).getPuntaje());
 
             str += "    (" + juego.getJugadores().get(i).getPuntajeUltima() + " pts)";
-            str += "    " + Integer.toString(juego.getJugadores().get(i).getTamMano());
-            str += "    " + Integer.toString(juego.getJugadores().get(i).getFichas().size());
+            str += " / Mano : " + Integer.toString(juego.getJugadores().get(i).getTamMano());
+            str += " / Bolsa : " + Integer.toString(juego.getJugadores().get(i).getFichas().size());
+            str += " / # : " +Integer.toString(juego.getJugadores().get(i).getFichasUsadas());
 
             str += "<br/>";
 

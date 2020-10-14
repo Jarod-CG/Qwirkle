@@ -13,12 +13,13 @@ import java.util.Collections;
  *
  * @author Carlos
  */
-public abstract class Jugador  {
+public abstract class Jugador {
 
     protected double puntaje;
     protected ArrayList<Ficha> fichas;
     protected Ficha[] mano;
     int puntajeUltima;
+    int fichasUsadas;
 
     private JugadaType tipoJugadaActual;
     private OrientacionType orientacion;
@@ -31,10 +32,20 @@ public abstract class Jugador  {
 
     public Jugador(Ficha[][] matrizFichas) {
         this.puntaje = 0;
+        this.fichasUsadas = 0;
         this.puntajeUltima = 0;
         this.fichas = new ArrayList();
         this.mano = new Ficha[6];
         this.matrizFichas = matrizFichas;
+    }
+
+    public int getFichasUsadas() {
+
+        return fichasUsadas;
+    }
+
+    public void setFichasUsadas(int fichasUsadas) {
+        this.fichasUsadas = fichasUsadas;
     }
 
     public int getPuntajeUltima() {
@@ -648,12 +659,10 @@ public abstract class Jugador  {
 
         return subconjunto.contains(ficha);
     }
-
+    
     public void permutarFichas(ArrayList<Ficha> conjunto, int tamano, ArrayList<ArrayList<Ficha>> todas) {
         if (0 == tamano) {
-
             ArrayList<Ficha> nuevo = (ArrayList<Ficha>) conjunto.clone();
-
             todas.add(nuevo);
         } else {
             for (int i = 0; i < tamano; i++) {
@@ -675,56 +684,32 @@ public abstract class Jugador  {
         }
     }
 
-    //retorna todas las combinaciones que comparten una propiedad
+    //retorna todas las combinaciones que comparten una propiedad (figuro/color)
     private ArrayList<ArrayList<Ficha>> combinaciones(Ficha[] mano) {
         ArrayList<ArrayList<Ficha>> lista = new ArrayList();
+        //setea en lista todos los subconjuntos de mano
         partesDe(lista, new ArrayList(), mano, 0);
-
-        int queEs = 0;//0 indef, 1 es color, 2 es figura
-
-        //System.out.println("sub de mano : " + lista.size());
-        /*
-        por algpun motivo lista despues de pasat por parteDe
-        queda con una lista null al inicio
-         */
         ArrayList<ArrayList<Ficha>> remover = new ArrayList();
-        //validar que compartand una propiedad
-        //recorre cada subconjunto
         for (int i = 0; i < lista.size(); i++) {
-            //recorre el subconjunto
-            ArrayList<Ficha> sub = lista.get(i);
-            for (int j = 1; j < sub.size(); j++) {
-
-                /*
-                if ((!sub.get(j - 1).getColor().equals(sub.get(j).getColor()))
-                        & (!sub.get(j - 1).getFigura().equals(sub.get(j).getFigura()))) {
-                    //si entra es porque el subconjunto no cumple con color o figura
-                    remover.add(sub);
-                    break;//es para el for anidado
-                }
-                 */
-                if (sub.get(j - 1).getColor().equals(sub.get(j).getColor())) {
-                    if (!coincideColor(sub) && !noRepetidas(sub)) {
-                        remover.add(sub);
-                        break;
-                    }
-                } else if (sub.get(j - 1).getFigura().equals(sub.get(j).getFigura())) {
-                    if (!coincideFigura(sub) && !noRepetidas(sub)) {
-                        remover.add(sub);
-                        break;
-                    }
-                } else {
-                    remover.add(sub);
-                    break;
-                }
-
+            ArrayList<Ficha> sub = lista.get(i);//toma un subconjunto
+            //si no comparte el color de todo el conjunto 
+            //y si no tiene fichas repetidas (mismo color y figura)
+            //lo agrega a remover
+            if (!coincideColor(sub) && !noRepetidas(sub)) {
+                remover.add(sub);
+                break;
             }
-
+            //lo mismo que el if anterior pero con figura
+            else if (!coincideFigura(sub) && !noRepetidas(sub)) {
+                remover.add(sub);
+                break;
+            }
         }
+        //los elimina de lista
         for (int i = 0; i < remover.size(); i++) {
             lista.remove(remover.get(i));
         }
-        //retorna todas
+        //elimina cualquier subcinjunto que pudiese no tener fichas
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).size() == 0) {
                 lista.remove(lista.get(i));
@@ -808,7 +793,6 @@ public abstract class Jugador  {
         System.out.println("**************************************");
         return mayor;
     }*/
-
     public ArrayList<Jugada> getTodasLasJugadas() {
         ArrayList<ArrayList<Movimiento>> arr = new ArrayList();
         ArrayList<Jugada> jugadas = new ArrayList();
@@ -884,15 +868,13 @@ public abstract class Jugador  {
         return num;
     }
 
-    
     public Jugada getMejorJugada() {
         ArrayList<Jugada> jugadas = getTodasLasJugadas();
-       //System.out.println("tamaño de todas las jugadas " + jugadas.size());
+        //System.out.println("tamaño de todas las jugadas " + jugadas.size());
         if (jugadas.size() == 0) {
             return null;
         }
-        
-        
+
         Jugada mayor = jugadas.get(0);
 
         if (jugadas.size() > 0) {
@@ -913,7 +895,7 @@ public abstract class Jugador  {
         }
         System.out.println("Total de puntos: " + mayor.getPuntajeTotal());
         System.out.println("**************************************");
-        */
+         */
         return mayor;
     }
 

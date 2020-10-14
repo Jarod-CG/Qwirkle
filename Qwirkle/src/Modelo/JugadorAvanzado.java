@@ -50,13 +50,15 @@ public class JugadorAvanzado extends Jugador {
          */
 
  
-        if (mayor.getPuntajeTotal()<3){
+        if (mayor.getPuntajeTotal()<0){
             return null;
         }
          
         return mayor;
     }
-
+    
+    //entran todas las jugadas posibles y elimina todas aquelllas
+    //que formen filas o columnas de 5, que regalen un qwirkle
     private void noRegalarQwirkle(ArrayList<Jugada> jugadas) {
         ArrayList<Jugada> remover = new ArrayList();
         for (int i = 0; i < jugadas.size(); i++) {
@@ -70,47 +72,36 @@ public class JugadorAvanzado extends Jugador {
     }
 
     private boolean regalaQwirkle(ArrayList<Movimiento> movimientos) {
-
-        //setea los movimientos en la matriz
-        ponerFichas(movimientos);
-        //evalua en fila y evalua en columna
-
+        ponerFichas(movimientos);//setea los movimientos en la matriz
         for (Movimiento movimiento : movimientos) {
-            //System.out.println("ficha : " + movimiento.getFicha().getTipo());
+            //si encuantra que regala un quirkle en fila o columna retorna true
             if (regalaQwirkleFila(movimiento.getFila(), movimiento.getColumna())
                     || regalaQwirkleColumna(movimiento.getFila(), movimiento.getColumna())) {
-                quitarFichas(movimientos);
+                quitarFichas(movimientos);//quita los movimientos de la matriz
                 return true;
             }
         }
-
-        //quita los movimientos de la matriz
-        quitarFichas(movimientos);
-
+        quitarFichas(movimientos);//quita los movimientos de la matriz
         return false;
     }
 
-    
-
     private boolean regalaQwirkleFila(int fila, int columna) {
         int columTmp = columna;
-
-        //hacer que se vaya a la columna de menor valor 
+        //hacer que se vaya al indice menor donde haya una ficha
         while (this.matrizFichas[fila][columTmp - 1] != null) {
             columTmp--;
         }
         int contador = 1;
+        //empieza a recorrer desde el indice inferior hasta que encuentra un null
         while (this.matrizFichas[fila][columTmp + 1] != null) {
             columTmp++;
             contador++;
         }
-        
-        return contador==5;
+        return contador==5 ;//si el contador es 5 es porque regala un qwirkle
     }
 
     private boolean regalaQwirkleColumna(int fila, int columna) {
         int filaTmp = fila;
-
         while (this.matrizFichas[filaTmp - 1][columna] != null) {
             filaTmp--;
         }
@@ -119,7 +110,6 @@ public class JugadorAvanzado extends Jugador {
             filaTmp++;
             contador++;
         }
-        
         return contador == 5;
     }
 

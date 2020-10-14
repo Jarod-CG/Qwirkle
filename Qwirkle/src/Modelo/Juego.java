@@ -21,10 +21,13 @@ public class Juego {
     private ArrayList<Ficha> fichas;
     private JugadaType tipoJugadaActual;
     private Movimiento primerJugada;
+    
+
 
     private int turno;
 
     public Juego(int numSim, int numAva, int n) {
+ 
         this.turno = 0;
         this.tipoJugadaActual = null;
         this.jugadores = new ArrayList();
@@ -50,6 +53,11 @@ public class Juego {
         setInicio();
 
     }
+
+    
+
+    
+    
 
     private void setInicio() {
         float f = (matrizFichas.length / 2);
@@ -99,18 +107,23 @@ public class Juego {
     public int getTurno() {
         return turno;
     }
-    
+
+
     
     //retorna true cuando hay ganador
     public boolean jugar() {
         Jugador jugador = jugadores.get(turno++ % jugadores.size());
 
         //aqui llamar al backtracking
+        
+        
         Jugada jugada = jugador.getMejorJugada();
         if (jugada != null) {
             jugador.sumarPuntaje(jugada.puntajeTotal);
             jugador.setPuntajeUltima(jugada.puntajeTotal);
-
+            
+            jugador.setFichasUsadas(jugada.getMovimientos().size());
+            
             aplicarJugada(jugada);
             //elimanr fichas de la mano
             jugador.eliminarFichas (jugada.getMovimientos());
@@ -122,7 +135,9 @@ public class Juego {
 
         }
         else {
+            jugador.setFichasUsadas(0);
             jugador.setPuntajeUltima(0);
+            
             jugador.cambiarMano();
         }
         return false;
@@ -401,5 +416,7 @@ public class Juego {
     public void setPrimerJugada(Movimiento primerJugada) {
         this.primerJugada = primerJugada;
     }
+
+    
 
 }
